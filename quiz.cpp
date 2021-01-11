@@ -45,8 +45,25 @@ public:
 	{
 		cscore = _cscore;
 	}
-
 };
+
+void sort(Student* list){
+	for(int i = 0; i < 10; i++){
+		int score1 = list[i].mscore + list[i].fscore + list[i].qscore
+			+ list[i].cscore;
+		for(int j = i; j < 10; j++){
+			int score2 = list[j].mscore + list[j].fscore + 
+				list[j].qscore + list[j].cscore;
+			Student tmp;
+			if(score1 < score2)
+			{
+				tmp = list[i];
+				list[i] = list[j];
+				list[j] = tmp;
+			}
+		}
+	}
+}
 
 int main(){
 	Student slist[10];
@@ -80,6 +97,7 @@ int main(){
 			s.setCheckinScore(score);
 			slist[num] = s;
 			num++;
+			sort(slist);
 		}
 		else if(order == 2)
 		{
@@ -106,7 +124,7 @@ int main(){
 		}
 		else if(order == 3)
 		{
-			for(int i = 0; i < 10; i++){
+			for(int i = 0; slist[i].name != ""; i++){
 				int total = slist[i].mscore +
 						slist[i].fscore +
 						slist[i].qscore +
