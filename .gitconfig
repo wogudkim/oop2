@@ -1,3 +1,5 @@
 [user]
 	email = wogudkim@gmail.com
 	name = wogudkim
+[push]
+	default = simple
