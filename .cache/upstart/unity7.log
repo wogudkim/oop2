@@ -1,0 +1,5 @@
+ERROR 2021-01-11 14:33:30 nux.gestures_subscription GesturesSubscription.cpp:93 Failed to deactivate Geis subscription.
+ERROR 2021-01-11 14:33:30 nux.gestures_subscription GesturesSubscription.cpp:93 Failed to deactivate Geis subscription.
+ERROR 2021-01-11 14:33:30 nux.gestures_subscription GesturesSubscription.cpp:93 Failed to deactivate Geis subscription.
+WARN  2021-01-11 14:33:31 nux.inputmethod.ibus InputMethodIBus.cpp:67 Impossible to connect to connect to ibus
+WARN  2021-01-11 14:33:31 unity.glib.dbus.proxy GLibDBusProxy.cpp:487 Calling method "SyncOne" on object path: "/com/canonical/Unity/Panel/Service" failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name com.canonical.Unity.Panel.Service.LockScreen was not provided by any .service files

@@ -1,0 +1,3 @@
+2020/09/26-18:25:29.839 22144 Reusing MANIFEST /home/wogudkim/.local/share/ubuntu-amazon-default/IndexedDB/https_www.amazon.com_0.indexeddb.leveldb/MANIFEST-000001
+2020/09/26-18:25:29.839 22144 Recovering log #3
+2020/09/26-18:25:29.840 22144 Reusing old log /home/wogudkim/.local/share/ubuntu-amazon-default/IndexedDB/https_www.amazon.com_0.indexeddb.leveldb/000003.log 

@@ -1,0 +1,29 @@
+합계 196
+-rw-rw-r-- 1 wogudkim wogudkim  2201 10월 26 04:48 12171603_HW1.zip
+-rwxrwxr-x 1 wogudkim wogudkim 12712 11월 28 20:03 a.out
+-rwxrwxr-x 1 wogudkim wogudkim  7776 10월 26 04:44 client
+-rw-rw-r-- 1 wogudkim wogudkim  1741 10월 26 04:47 client.c
+-rw-rw-r-- 1 wogudkim wogudkim    10 11월  4  2019 data.txt
+drwxrwxr-x 2 wogudkim wogudkim  4096 10월 29 18:56 dir1
+-rw-r--r-- 1 wogudkim wogudkim     3 11월 28 20:05 dir_num.txt
+-rw-r--r-- 1 wogudkim wogudkim  8980  7월  8 15:26 examples.desktop
+-rw-r--r-- 1 wogudkim wogudkim     0 11월 28 20:04 ls
+-rw-r--r-- 1 wogudkim wogudkim     0 11월 28 20:06 ls.txt
+-rwxrwxr-x 1 wogudkim wogudkim  8096 10월 26 04:46 server
+-rw-rw-r-- 1 wogudkim wogudkim  2350 10월 26 04:47 server.c
+-rw-rw-r-- 1 wogudkim wogudkim  4250 11월 28 20:03 simple_myshell.c
+-rw-rw-r-- 1 wogudkim wogudkim  1417 11월 14 22:43 simple_myshell.c.zip
+drwxrwxr-x 2 wogudkim wogudkim  4096 10월 18 02:04 source file
+-rw-rw-r-- 1 wogudkim wogudkim 29701 10월 18 02:04 source file.zip
+-rw-r--r-- 1 wogudkim wogudkim    23 11월 28 18:31 test.txt
+-rw-r--r-- 1 wogudkim wogudkim    23 11월 28 18:32 test1.txt
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 공개
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 다운로드
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 문서
+drwxr-xr-x 2 wogudkim wogudkim  4096 10월 18 01:52 바탕화면
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 비디오
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 사진
+drwxrwxr-x 2 wogudkim wogudkim  4096  9월 27 16:37 소스파일 및 텍스트파
+-rw-rw-r-- 1 wogudkim wogudkim 36458  9월 27 16:37 소스파일 및 텍스트파.zip
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 음악
+drwxr-xr-x 2 wogudkim wogudkim  4096  7월  8 16:56 템플릿

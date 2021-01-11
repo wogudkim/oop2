@@ -1,0 +1,2875 @@
+/**
+ * 코스모스 3.0 : required moodle version 3.x
+ */
+$(document).ready(function() 
+{
+	var url = document.location;
+	var isSimpleMode = true;
+	var isModuleUrlView = true; // moduel url
+
+	var filter = "win16|win32|win64|mac|macintel";
+	var isMobile = false;
+
+	if ( navigator.platform ) {
+		if ( filter.indexOf( navigator.platform.toLowerCase() ) < 0 ) {
+			isMobile = true;
+		}
+	}
+    $('head').append('<style type="text/css">.notice_popup, .vtbanner_popup{display: block !important; }</style>'); 
+    $(".notice_popup .close").click(function(){
+        $(this).parent().parent().remove(); 
+	});
+	$(".vtbanner_popup .close").click(function(){
+        $(this).parent().parent().remove(); 
+	});
+	
+	
+/********************************************
+	공통 form 개선
+*********************************************/
+	/*
+	if(url.pathname == '/local/ubion/setting/course.php' && url.search.indexOf('?id=')>-1){	// 강의실 > 기타 관리 > 강좌설정 - '강의실 사용여부' 숨김
+		$("label[for='course_visible']").hide();
+		$("label[for='course_visible']").next().hide();
+	}
+	*/
+
+	if(url.pathname=='/group/index.php')
+	{
+		//팀 설정 - 최소값 설정
+		$("#groupeditform .boxaligncenter .groups select").css("min-width", "240px");
+		$("#groupeditform .boxaligncenter .members select").css("min-width", "240px");
+	}
+
+	$('head').append('<style type="text/css">.trans_message .trans_waitcount,.trans_message .trans_waitorder { display: none; }</style>');
+	if(url.hostname !== 'lms.knu9.or.kr' && url.hostname !== 'sel.jnu.ac.kr'){ // 케리스,전남대 제외
+		if(url.pathname == '/mod/econtents/view.php'){	// 모바일로 E-contents 들어가면 버튼 숨김, 공지표시
+			$('#page-mod-econtents-view.device_mobile #page-content #region-main .btn').hide();
+			$('#page-mod-econtents-view.device_mobile #page-content #region-main .btn').after('<p>이 콘텐츠는 PC 웹브라우저에서만 재생이 가능한 콘텐츠입니다. (모바일에서 재생할 수 없는 양식의 콘텐츠입니다.)</p>')
+		}
+	}	
+	
+	if(url.pathname=='/course/modedit.php')
+	{
+		//식별번호 숨김(인덕대, 혜전대, 관광대, 배제대 제외)
+		switch(url.hostname) {
+			case 'lms.induk.ac.kr':
+			case 'lms.hj.ac.kr':
+			case 'hjlms.moodler.kr':
+			case 'ktclms.moodler.kr':
+			case 'e-learning.ktc.ac.kr':
+			case 'pculms.moodler.kr':
+			case 'cyber.pcu.ac.kr':
+			break;
+			default:
+				$('#fitem_id_cmidnumber').hide();
+		}
+
+		//접근제한 CSS 보정
+		setTimeout(function(){ $('#fitem_id_availabilityconditionsjson div.availability-field').css('padding','0px').css('border','0px'); }, 3000);
+		setTimeout(function(){ $('#fitem_id_availabilityconditionsjson div.availability-button').css('margin-left','0px'); }, 3000);
+		setTimeout(function(){ if(theme_coursemosv2.lang=='ko') { $('div.availability-none').text('설정되어 있지 않습니다.'); } }, 3000);
+	}
+
+
+	var form_modulename = ($('#mform1 input[name="modulename"]').length > 0) ? $('#mform1 input[name="modulename"]').val() : 'none';
+
+
+/********************************************
+	과제(activity_assign)
+*********************************************/
+// 고급설정 > 과제 관리 	
+	if(url.pathname=='/mod/assign/view.php' || url.pathname=='/grade/grading/manage.php' || url.pathname.indexOf('/grade/grading/form/rubric/')>-1 || url.pathname=='/grade/grading/pick.php')
+	{
+		$($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+		var link;
+		$("li",$('#settingsnav li.type_setting ul')).each(function(i) { 
+			link=$(this).find('a').attr('href'); 
+			if(link.indexOf('/admin/roles')>-1||link.indexOf('/filter/')>-1||link.indexOf('/report/log/')>-1||link.indexOf('/backup/')>-1) { $(this).html(''); }
+ 		});
+
+		//학습활동 블록 숨김
+		$('div.block-quick-mod').addClass('hidden');
+	}
+
+// 과제 설정
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=assign')>-1) || form_modulename.indexOf('assign')>-1) )
+	{
+		if(url.hostname!='cyber.gachon.ac.kr' && url.hostname!='ecampus.kangnam.ac.kr') { //가천대, 강남대 제외
+			$('#fgroup_id_assignsubmission_onlinetext_wordlimit_group').hide();
+		}
+		$('#id_submissionsettings').hide();
+		//$('#id_groupsubmissionsettings').hide();
+		$('#id_feedbacktypes').hide();
+		$('#id_notifications').hide();
+
+		// $('#id_assignsubmission_file_maxfiles').val("10").prop("selected", true);
+		// $('#id_submissiontypes').hide();   // 요청자 안태준 2016.11.09
+
+		$('#id_modgrade_type').on("change",function() {
+			if($(this).val()=='scale')
+			{
+				$('#id_modgrade_point').prev().prev().hide();
+				$('#id_modgrade_point').prev().hide();
+				$('#id_modgrade_point').hide();
+				$('#id_modgrade_scale').prev().prev().show();
+				$('#id_modgrade_scale').prev().show();
+				$('#id_modgrade_scale').show();
+			} else if($(this).val()=='point') { 
+				$('#id_modgrade_scale').prev().prev().hide();
+				$('#id_modgrade_scale').prev().hide();
+				$('#id_modgrade_scale').hide();
+				$('#id_modgrade_point').prev().prev().show();
+				$('#id_modgrade_point').prev().show();
+				$('#id_modgrade_point').show();
+			} 
+		});
+		$('#id_modgrade_scale').prev().prev().hide();
+		$('#id_modgrade_scale').prev().hide();
+		$('#id_modgrade_scale').hide();
+
+		// 과제 성적 '통과 점수' 숨김 처리(우석대 제외)
+		if(url.hostname != 'smart.woosuk.ac.kr') {
+			$('#fitem_id_gradepass').hide();
+		}
+		
+		// 과제 성적 '더보기' 숨김 처리
+		setTimeout(function(){ $('#id_modstandardgrade div.moreless-actions').hide();}, 3000);
+		
+
+		//제출 버튼 보이기 위치 이동
+		var $temp = $("#fitem_id_submissiondrafts").clone(); $temp.removeClass("show"); $("#fitem_id_submissiondrafts").remove(); $("#fitem_id_requireallteammemberssubmit").before($temp);
+		if($('#id_teamsubmission').attr('type')=="hidden") $('#id_submissiondrafts').attr('disabled', 'true');
+
+		$('#fitem_id_preventsubmissionnotingroup').hide();
+		$('#id_preventsubmissionnotingroup').val(1).prop("selected", true);
+
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+	}
+
+//과제 확인
+	if(url.pathname=='/mod/assign/view.php' && url.search.indexOf('?id=')>-1 && url.search.indexOf('&action=')==-1)
+	{
+		//$('div.submissionlinks > a').css('background-color','#337ab7').css('border-color','#2e6da4').css('color','#fff');
+		$('div.submissionlinks a').addClass('btn-primary').addClass('write');
+		$('div.singlebutton input.btn').addClass('form-submit');
+
+		// copykiller preview
+			var copykiller_sites = ['tls.kku.ac.kr','kkulmscm3.moodler.kr','cyber.inu.ac.kr','inulmscm3.moodler.kr'];
+			var copykiller_text = (theme_coursemosv2.lang=='ko') ? '표절검사 해보기':'plagiarism check';
+			if(jQuery.inArray(url.hostname,copykiller_sites)>-1) {
+				$('div.submissionaction').append('<div class="singlebutton" style="float:right;"><a href="http://'+url.hostname+'/copykiller/login.php" class="btn btn-success" target="_blank">' + copykiller_text + '</a></div>');
+		}
+
+	}
+
+
+//과제 제출하기
+ 	if(url.pathname=='/mod/assign/view.php' && url.search.indexOf('&action=editsubmission')>-1)
+	{
+		var text_ko = "[저장] 버튼을 클릭 시 최종 과제 제출일이 업데이트 되오니 주의하세요.";
+		var text_en = "Please note that clicking [Save changes] changes the latest submission date.";
+		if($('#id_submitbutton').val()=='저장')
+		{ 
+			$('#fgroup_id_buttonar div.fgroup').append("<div style='margin-top:10px;margin-left:5px;color:#d9534f;font-weight:bold;'>"+text_ko+"</div>"); 
+		} else {
+			$('#fgroup_id_buttonar div.fgroup').append("<div style='margin-top:10px;margin-left:5px;color:#d9534f;font-weight:bold;'>"+text_en+"</div>"); 
+		}
+	}
+
+//과제 채점하기
+	if(url.pathname=='/mod/assign/view.php' && url.search.indexOf('action=grading')>-1 )
+	{
+		$('table.generaltable thead th').css('white-space','nowrap');
+
+		//사진
+		$('table.generaltable thead th.c1').hide();
+		$('table.generaltable tbody td.c1').hide();
+
+		//이름
+		$('table.generaltable tbody td.c2').css('white-space','nowrap');
+		//학번
+		$('table.generaltable tbody td.c3').css('white-space','nowrap');
+		//채점 상태
+		$('table.generaltable tbody td.c4').css('white-space','nowrap');
+
+		//성적
+
+		//편집
+		$('table.generaltable .textmenu').html('<img src="/theme/image.php/coursemosv2/core/1468025184/i/settings" />');
+
+		//제출 수정일
+		$('table.generaltable tbody td.c7').css('white-space','nowrap');
+
+		//직접입력
+		$('table.generaltable tbody td.c8').css('text-align','center').css('white-space','nowrap');
+		$('table.generaltable tbody td.c8 div.no-overflow').hide();
+
+		//첨부파일
+		//$('table.generaltable tbody td.c9').css('white-space','nowrap');
+		$('table.generaltable tbody td.c9').css('white-space','nowrap');	
+		$('table.generaltable tbody td.c9 div.no-overflow').hide();	// [팀과제]-[직접작성] 텍스트 hide
+		
+		// 첨부파일 텍스트 변경
+		$("head").append($("<style>").text(".ygtvcell.ygtvhtml.ygtvcontent>div {white-space:nowrap;}.ygtvcell.ygtvhtml.ygtvcontent>div>a {min-width:50px; font-size:0 !important;} .ygtvcell.ygtvhtml.ygtvcontent>div>a:before {white-space:nowrap; font-size:16px; content:\"저장\" !important;}"));
+
+		//제출물 설명
+		//$('table.generaltable thead th.c10').hide();
+		//$('table.generaltable tbody td.c10').hide();
+
+		//채점 수정일
+
+		//피드백 첨부파일
+		
+		if(url.hostname!='etl.snu.ac.kr' || url.hostname !== 'lms.mokpo.ac.kr') {
+			$('table.generaltable thead th.c14').hide();
+			$('table.generaltable tbody td.c14').hide();
+		}
+
+		// 목포대 피드백 보기 추가 - 이유는 모르나 위의 함수가 잘못 작동됨
+		if(url.hostname ==='lms.mokpo.ac.kr'){
+			$('table.generaltable thead th.c14').show();
+			$('table.generaltable tbody td.c14').show();
+		}
+
+		if(url.hostname == 'lms.dongnam.ac.kr'){	//동남보건대 첨부파일 칼럼 show
+			if($('table.generaltable thead th.c14').text() == '첨부파일'){
+				$('table.generaltable thead th.c14').show();
+				$('table.generaltable tbody td.c14').show();
+			} else if($('table.generaltable thead th.c14').text() == '피드백'){
+				$('table.generaltable thead th.c14').show();
+				$('table.generaltable tbody td.c14').show();
+			}
+		}
+
+		$('#fitem_id_showonlyactiveenrol').hide();
+
+		$('#fitem_id_sendstudentnotifications').hide();
+		$('#fitem_id_savequickgrades').css('margin-top','20px');
+		$('#id_savequickgrades').addClass('form-submit');
+	}
+
+//과제 개별 채점하기
+	if(url.pathname=='/mod/assign/view.php' && url.search.indexOf('&action=grade')>-1)
+	{
+		$('#fitem_id_sendstudentnotifications').hide();
+	}
+
+/********************************************
+	퀴즈(activity_quiz)
+*********************************************/
+// 퀴즈
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=quiz')>-1) || form_modulename.indexOf('quiz')>-1) ) 
+	{		
+		$('#id_timing').removeClass('collapsed');
+		$('#id_display').hide();
+		if(url.hostname == 'tls.kku.ac.kr'){
+			$('#id_security').click(function(){
+				$('#id_security div.moreless-actions').hide();
+			});
+		} else {
+			if(url.hostname != 'smart.wsu.ac.kr' && url.hostname != 'ulms.ulsan.ac.kr') {
+				$('#id_security').hide();
+			}
+		}
+		$('#id_overallfeedbackhdr').hide();
+		if(url.hostname !== 'learn.hansung.ac.kr' || url.hostname !== 'ulms.ulsan.ac.kr' || url.hostname !== 'lms.mokpo.ac.kr'){ // 한성대, 울산대, 목포대 제외
+			/*
+			// 일반적인피드백 삭제
+			$('#fgroup_id_duringoptionsgrp fieldset > span').get(4).remove();
+			$('#fgroup_id_immediatelyoptionsgrp fieldset > span').get(4).remove();
+			$('#fgroup_id_openoptionsgrp fieldset > span').get(4).remove();
+			$('#fgroup_id_closedoptionsgrp fieldset > span').get(4).remove();
+			*/
+
+			// 피드백표시 - 전반적인피드백 삭제
+			$('#fgroup_id_duringoptionsgrp fieldset > span:nth-child(7)').remove();
+			$('#fgroup_id_immediatelyoptionsgrp fieldset > span:nth-child(7)').remove();
+			$('#fgroup_id_openoptionsgrp fieldset > span:nth-child(7)').remove();
+			$('#fgroup_id_closedoptionsgrp fieldset > span:nth-child(7)').remove();
+
+			// 피드백표시 - 구체적인피드백 삭제
+			$('#fgroup_id_duringoptionsgrp fieldset > span:nth-child(4)').remove();
+			$('#fgroup_id_immediatelyoptionsgrp fieldset > span:nth-child(4)').remove();
+			if(url.hostname !== 'lms.mokpo.ac.kr'){	//목포대 제외
+				$('#fgroup_id_openoptionsgrp fieldset > span:nth-child(4)').remove();
+			}
+			//$('#fgroup_id_closedoptionsgrp fieldset > span:nth-child(4)').remove();	//퀴즈 마감 이후 에는 표시
+
+			// 피드백표시 - 정답여부 삭제
+			$('#fgroup_id_duringoptionsgrp fieldset span:nth-child(2)').remove();
+			$('#fgroup_id_immediatelyoptionsgrp fieldset > span:nth-child(2)').remove();
+			if(url.hostname !== 'lms.mokpo.ac.kr'){	//목포대 제외
+				$('#fgroup_id_openoptionsgrp fieldset > span:nth-child(2)').remove();
+			}
+			//$('#fgroup_id_closedoptionsgrp fieldset > span:nth-child(2)').remove();	//퀴즈 마감 이후 에는 표시
+		}
+		if(url.hostname == 'eclass.daejin.ac.kr'){
+			$('#id_reviewoptionshdr .fcontainer #fgroup_id_duringoptionsgrp .felement span').eq(0).remove();
+			$('#id_reviewoptionshdr .fcontainer #fgroup_id_immediatelyoptionsgrp .felement span').eq(0).remove();
+			$('#id_reviewoptionshdr .fcontainer #fgroup_id_openoptionsgrp .felement span').eq(0).remove();
+			$('#id_reviewoptionshdr .fcontainer #fgroup_id_closedoptionsgrp .felement span label').eq(0).css('color','red');
+			$('#fgroup_id_closedoptionsgrp').after('<div class="fitem fitem_caution" style="color:red; width:100%;text-align:center; font-weight:bold;">※ 응시내역을 체크할 경우 시험종료 후 학생이 시험문제를 볼 수 있습니다.<br>※ 시험종료 후 학생이 문제확인 가능 여부를 결정하여 체크해 주시기 바랍니다.</div>');
+		}
+
+		// 버튼 삭제
+		$('#id_submitbutton2').hide();
+		if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+
+		if(url.hostname == 'eclass.daejin.ac.kr'){
+			$('#id_modstandardgrade').removeClass('collapsed containsadvancedelements');
+			$('#id_layouthdr').removeClass('collapsed containsadvancedelements');
+			$('#id_interactionhdr').removeClass('collapsed containsadvancedelements');
+			$('#id_reviewoptionshdr').removeClass('collapsed containsadvancedelements');
+			$('#id_modstandardelshdr').removeClass('collapsed containsadvancedelements');
+			$('#id_availabilityconditionsheader').removeClass('collapsed containsadvancedelements');
+			$('#id_activitycompletionheader').removeClass('collapsed containsadvancedelements');
+			$('#id_timing .fcontainer .moreless-actions').css('display','none');
+			$('#fitem_id_overduehandling').addClass('show');
+			$('#fitem_id_graceperiod').addClass('show');
+			$('#id_modstandardgrade .fcontainer #fitem_id_gradecat .felement #id_gradecat').css('width','50%');
+			$('#id_modstandardgrade .fcontainer #fitem_id_gradecat .felement #id_gradecat').css('float','left');
+			$('#id_gradecat').after('<div style="font-size:13px; float:right; width:50%; color:red;">※ 퀴즈 생성시 반드시 카테고리를 필수로 지정해야 합니다. 카테고리를 지정하지 않은 경우 성적 산정에 문제가 발생할 수 있습니다.</div>')
+		}
+	}
+
+	if(url.pathname=='/mod/quiz/view.php' || 
+		url.pathname=='/mod/quiz/edit.php' || 
+		url.pathname=='/mod/quiz/report.php' || 
+		url.pathname=='/mod/quiz/review.php' ||  
+		url.pathname=='/mod/quiz/attempt.php' || 
+		url.pathname=='/mod/quiz/summary.php'  || 
+		url.pathname=='/mod/quiz/overrides.php' || 
+		(url.pathname=='/course/modedit.php' && form_modulename.indexOf('quiz')>-1))
+	{
+		//학습활동 블록 숨김
+		$('div.block-quick-mod').addClass('hidden');
+
+		$($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+		var link;
+		$("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+			link=$(this).find('a').attr('href');
+			if(link.indexOf('/admin/roles/assign.php')>-1||link.indexOf('/admin/roles/check.php')>-1||link.indexOf('/filter/')>-1||link.indexOf('/report/log/')>-1||link.indexOf('/backup/')>-1) { $(this).html(''); }
+		}); 
+		$("a[href*='/mod/quiz/report.php'][href*=overview]",$("li.type_setting")).each(function() { $(this).attr("href",$(this).attr("href")+"&slotmarks=0"); });
+		//$("a[href*='/mod/quiz/report.php'][href*=responses]",$("li.type_setting")).remove();
+	}
+
+// 퀴즈 확인	
+	if(url.pathname=='/mod/quiz/view.php')
+	{
+		//결과 보기 단순화
+		var href=$('div.quizattemptcounts > a').attr('href'); $('div.quizattemptcounts > a').attr('href',href+'&slotmarks=0');
+		if(theme_coursemosv2.lang=='ko') { $('div.quizattemptcounts > a').text($('div.quizattemptcounts > a').text()+'명'); }
+		
+		if(url.hostname == 'myclass.sch.ac.kr')
+		{
+			if(isMobile==true)
+			{
+				$('div.quizstartbuttondiv form div input[type=submit]').hide();
+				$('div.quizstartbuttondiv form div input[type=submit]').after('<p><br /><font color="#CC0000"><b>모바일에서는 시험응시가 불가능합니다. <br />PC에서 확인하세요.</b></font></p>');
+			} else {
+				if($('table.quizattemptsummary').length>0){ $('div.quizattempt').hide(); }
+			}
+
+		}
+
+		$('div.quizinfo p').first().css('font-weight','bold');
+		$('div.quizinfo p').last().css('font-weight','bold');
+		$('div.singlebutton input[type=submit]').css('color','#fff').css('background-color','#5bc0de ').css('border-color','#46b8da ').on("mouseover",function() { $(this).css('background-color','#31b0d5').css('border-color','#269abc');  }).on("mouseout",function() { $(this).css('background-color','#5bc0de').css('border-color','#46b8da');  });
+	}
+
+	if(url.pathname=='/mod/quiz/report.php')
+	{
+		if(url.search.indexOf('&mode=overview')>-1 || url.search.indexOf('&mode=responses')>-1) {
+			$('#region-main h2').next().addClass('alert').addClass('alert-success').css('margin-left','0px').css('font-weight','bold');
+		}
+
+		if(url.search.indexOf('&mode=overview')>-1 || $('#mform1 input[name=mode]').val()=='overview'){
+//			if(theme_coursemosv2.lang=='ko') { $('#region-main h2').next().text($('#region-main h2').next().text()+'명'); }
+			$('#id_preferencesuser').addClass('collapsed');
+			if($('#menudownload')) {
+				$('#mform1').next().hide(); $('#mform1').next().next().hide();
+				$('#menudownload').val('excel');
+				$('#menudownload').next().removeClass('btn-default').addClass('btn-info');
+			}
+			if($('#attempts')) {
+				$('#attempts th').css('text-align','center');
+				$('#attempts td').css('text-align','center');
+			}
+			$('a.reviewlink').append('<img src="/theme/image.php?theme=coursemosv2&amp;component=core&amp;rev=1470896408&amp;image=i%2Fpreview" width="12" height="12" />');
+		}
+	}
+
+	if(url.pathname=='/mod/quiz/review.php')
+	{
+		$('div.othernav > a').addClass('btn').addClass('btn-info');
+		$('div.submitbtns > a').addClass('btn').addClass('btn-info');
+		$('.mobiletheme .mod_quiz-next-nav').css('margin-bottom','50px');	// 모바일화면 - 검토완료 버튼 여백추가
+	}
+	if(url.pathname=='/mod/quiz/attempt.php'){
+		$('.mobiletheme .mod_quiz-next-nav').css('margin-bottom','50px');	// 모바일화면 - 검토완료 버튼 여백추가
+	}
+
+	if(url.pathname=='/mod/quiz/attempt.php' || url.pathname=='/mod/quiz/summary.php')
+	{
+		$('div.othernav > a').addClass('btn').addClass('btn-warning');
+		$('div.submitbtns input[type=submit]').removeClass('btn-default').addClass('btn-info');
+		// modify_jh 전북대 퀴즈 배경색 - 흰색 변경 / 요청일: 18.11.07, 요청자: 최영재
+		if(url.hostname == 'kedilms.jbnu.ac.kr' || url.hostname == 'jbec.jbnu.ac.kr'){
+			$('div.formulation').css('background-color','#FFFFFF');
+		}
+	}
+
+	// 퀴즈 답안 제출
+	/**
+	if(url.pathname=='/mod/quiz/summary.php')
+	{
+		$('div.othernav a.endtestlink').hide();
+		if(url.hostname != 'lms.induk.ac.kr') {
+			$('div.submitbtns form div input[type=submit]').first().hide();
+		}
+	}
+	**/
+
+// 퀴즈 편집	
+	if(url.pathname=='/mod/quiz/edit.php')
+	{
+
+		$('div.statusdisplay').css('background-color','#f2dede').css('border-color','#ebccd1').css('color','#a94442');
+		$('#inputmaxgrade').css('width','60px');
+
+		$('div.last-add-menu ul li a span').first().addClass('btn').addClass('btn-success');
+		$('div.last-add-menu ul li a b').remove();
+		$('div.last-add-menu').css('margin','0px').css('margin-top','20px');
+
+		//첫번째 section heading 삭제
+		$('div.content div.instancesectioncontainer').first().hide();
+
+		//랜덤 문제 추가 삭제
+		//$('ul.menu').each(function(i){  $(this).children().last().remove();  });
+	}
+
+// 문제은행
+	if(url.pathname=='/question/edit.php')
+	{
+		if(url.hostname != 'eclass.daejin.ac.kr' && url.hostname != 'kbtus.koer.kr'){	//대진대, koer 침례신학대 제외
+			$('#qbshowtext_on').parent().hide();
+		}
+		if(url.hostname != 'learn.hansung.ac.kr'){ // 한성대 제외
+			$('#advancedsearch').hide();
+		}	
+		$('.sorters').hide();
+		$('#displayoptions div div.categoryinfo').hide();  //... 공유되었습니다.
+	}
+
+// 문제은행 > 미리보기
+	if(url.pathname=='/question/preview.php')
+	{
+		$('#techinfo').hide();
+		$('form.mform').hide();
+	}
+
+// 문제은행 > 문제 유형 추가	
+	if(url.pathname=='/question/question.php')
+	{
+                if(url.hostname != 'lms.induk.ac.kr' &&
+                         url.hostname != 'ecampus.smu.ac.kr' ) {
+			// $('#fitem_id_generalfeedback').hide();
+		}
+
+		//선다형
+		if(url.search.indexOf('&qtype=multichoice')>0 || $('#mform1 input:hidden[name=qtype]').val()=="multichoice")
+		{
+
+			//$('#id_answernumbering').val('123');
+
+			//용어 수정
+			if(theme_coursemosv2.lang=='ko') { $('div.fitem_fselect').each(function(i){ if($(this).attr('id').indexOf('fitem_id_fraction_')>-1){ $(this).find('label').text('점수반영비율'); } }); }
+			//보기 피드백 삭제
+			$('div.fitem_feditor').each(function(i){ if($(this).attr('id').indexOf('fitem_id_feedback_')>-1) { $(this).find('div').hide(); } }); //html(''); }  });
+			//보기 추가 금지
+			//$('#fitem_id_addanswers').hide();	
+
+			//정답 피드백 숨김
+			$('#id_combinedfeedbackhdr').hide();	
+
+			//감정비율
+			$('#id_penalty').val('0');
+			//힌트 삭제
+			$('#fitem_id_hint_0').hide();
+			$('#fitem_id_hint_1').hide();
+			$('#fgroup_id_hintoptions_0').hide();
+			$('#fgroup_id_hintoptions_1').hide();
+			$('#fitem_id_addhint').hide();
+		}
+
+		//주관식단답형
+		if(url.search.indexOf('&qtype=shortanswer')>0 || $('#mform1 input:hidden[name=qtype]').val()=="shortanswer")
+		{
+                        //용어 수정
+                        if(theme_coursemosv2.lang=='ko') { $('label.accesshide').each(function(i){ if($(this).attr('for').indexOf('id_fraction_')>-1){ $(this).text('점수반영비율'); } });  }
+                        //보기 피드백 삭제
+                        $('div.fitem_feditor').each(function(i){ if($(this).attr('id').indexOf('fitem_id_feedback_')>-1) { $(this).find('div').hide(); }  });
+                        //보기 추가 금지
+                        //$('#fitem_id_addanswers').hide();
+
+                        //정답 피드백 숨김
+                        $('#id_combinedfeedbackhdr').hide();  
+
+                        //감정비율
+                        $('#id_penalty').val('0');
+                        //힌트 삭제
+                        $('#fitem_id_hint_0').hide();
+                        $('#fitem_id_hint_1').hide();
+                        $('#fgroup_id_hintoptions_0').hide();
+                        $('#fgroup_id_hintoptions_1').hide();
+                        $('#fitem_id_addhint').hide();
+		}
+
+                //서술형
+                if(url.search.indexOf('&qtype=essay')>0 || $('#mform1 input:hidden[name=qtype]').val()=="essay") 
+                {
+			$('#id_responsetemplateheader').addClass('collapsed');
+			$('#id_graderinfoheader').hide();
+                }
+
+		//OX형
+		if(url.search.indexOf('&qtype=truefalse')>0 || $('#mform1 input:hidden[name=qtype]').val()=="truefalse")
+		{
+			$('#fitem_id_feedbacktrue').hide();
+			$('#fitem_id_feedbackfalse').hide();
+			$('#id_multitriesheader').hide();
+		}
+
+                //짝짓기형
+                if(url.search.indexOf('&qtype=match')>0 || $('#mform1 input:hidden[name=qtype]').val()=="match")
+                {
+                        //정답 피드백 숨김
+                        $('#id_combinedfeedbackhdr').hide();
+
+                        //감정비율
+                        $('#id_penalty').val('0');
+                        //힌트 삭제
+                        $('#fitem_id_hint_0').hide();
+                        $('#fitem_id_hint_1').hide();
+                        $('#fgroup_id_hintoptions_0').hide();
+                        $('#fgroup_id_hintoptions_1').hide();
+                        $('#fitem_id_addhint').hide();
+                }
+
+		//빈칸채우기형
+		if(url.search.indexOf('&qtype=multianswer')>0 || $('#mform1 input:hidden[name=qtype]').val()=="multianswer")
+		{
+                        //감정비율
+                        $('#id_penalty').val('0');
+                        //힌트 삭제
+                        $('#fitem_id_hint_0').hide();
+                        $('#fitem_id_hint_1').hide();
+                        $('#fgroup_id_hintoptions_0').hide();
+                        $('#fgroup_id_hintoptions_1').hide();
+                        $('#fitem_id_addhint').hide();
+		}
+		
+		//수치형
+		if(url.search.indexOf('&qtype=numerical')>0 || $('#mform1 input:hidden[name=qtype]').val()=="numerical")
+		{
+                        //용어 수정
+			if(theme_coursemosv2.lang=='ko') { $('label.accesshide').each(function(i){ if($(this).attr('for').indexOf('id_fraction_')>-1){ $(this).text('점수반영비율'); } });  }
+                        //보기 피드백 삭제
+                        $('div.fitem_feditor').each(function(i){ if($(this).attr('id').indexOf('fitem_id_feedback_')>-1) { $(this).find('div').hide(); }  });
+                        //보기 추가 금지
+                        //$('#fitem_id_addanswers').hide();
+
+
+                        //정답 피드백 숨김
+                        $('#id_combinedfeedbackhdr').hide();
+
+                        //감정비율
+                        $('#id_penalty').val('0');
+                        //힌트 삭제
+                        $('#fitem_id_hint_0').hide();
+                        $('#fitem_id_hint_1').hide();
+                        $('#fgroup_id_hintoptions_0').hide();
+                        $('#fgroup_id_hintoptions_1').hide();
+                        $('#fitem_id_addhint').hide();
+		}
+
+	}
+
+/********************************************
+	투표(activity_choice)
+*********************************************/
+// 투표
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=choice')>-1) || form_modulename.indexOf('choice')>-1) )
+	{
+		$('#id_showunanswered').val("1");
+		$('#fitem_id_showunanswered').hide();
+		$('#fitem_id_includeinactive').hide();
+
+		if(theme_coursemosv2.lang=='ko') 
+		{
+			$('#id_optionhdr > legend > a').text('문항 설정');
+			$('#id_option_add_fields').val('문항 추가').removeClass('btn-default').addClass('btn-info');
+		}
+
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+	}
+
+// 투표 확인
+	if(url.pathname=='/mod/choice/view.php')
+	{
+		$("div.expired").css('background-color','#f2dede').css('border-color','#ebccd1').css('color','#a94442');
+		$('#region-main input[type=submit]').removeClass('btn-default').addClass('btn-info');
+	}
+
+// 투표 결과
+	if(url.pathname=='/mod/choice/report.php')
+	{
+		$('div.downloadreport ul li').each(function(i){ if(i!=1) $(this).html(''); });
+
+		var temp=$('div.downloadreport').clone();
+		$('div.downloadreport').remove();$('h3').after(temp);
+		$('div.downloadreport ul li input[type=submit].btn').css('color','#fff').css('background-color','#5cb85c').css('border-color','#4cae4c ').on("mouseover",function() { $(this).css('background-color','#449d44').css('border-color','#398439'); }).on("mouseout",function() { $(this).css('background-color','#5cb85c').css('border-color','#4cae4c'); });
+
+		$('div.downloadreport').css('margin','0px');
+		$('div.downloadreport ul li').css('float','right').css('margin-right','80px');
+
+		var temp2=$('div.responseaction div.singleselect div').html();
+		$('div.responseaction div.singleselect').remove();
+		$('div.responseaction label').css('margin-left','10px').css('margin-right','10px').after(temp2);
+		$('div.responseaction a').first().removeClass('btn-default').addClass('btn-info');
+	}
+
+	if(url.pathname=='/mod/choice/view.php' ||
+		url.pathname=='/mod/choice/report.php' ||
+                (url.pathname=='/course/modedit.php' && form_modulename.indexOf('choice')>-1))
+        {
+                //학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        if(i!=0) $(this).html('');
+                });
+        }
+
+/********************************************
+	설문조사(activity_feedback)
+*********************************************/
+//설문조사
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=feedback')>-1) || form_modulename.indexOf('feedback')>-1) )
+	{
+		$('#id_timinghdr').removeClass('collapsed');
+		$('#fitem_id_email_notification').hide();
+		
+        if(url.hostname !== 'lms.dongnam.ac.kr'){ //동남보건대 제외
+            $("#id_autonumbering").val("1");
+		}
+		
+		$('#id_feedbackhdr').removeClass('collapsed');
+
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+	}
+
+
+//설문조사 > 문항편집
+	if(url.pathname=='/mod/feedback/edit_item.php')
+	{
+		//$('#fitem_id_label').hide();	//표지 숨김처리
+
+		if($("input[name=typ]").attr("value") == 'multichoice' )
+		{	//선다 typ=multichoice
+			$("#id_hidenoselect").val("1");
+			$('#fitem_id_hidenoselect').hide();
+		} else if($("input[name=typ]").attr("value") == 'multichoicerated' )
+		{	//선다(등급) typ=multichoicerated
+			$("#id_hidenoselect").val("1");
+			$('#fitem_id_hidenoselect').hide();
+		} else if($("input[name=typ]").attr("value") == 'multichoicerated' )
+		{	//선다(등급) typ=multichoicerated
+			$("#id_hidenoselect").val("1");
+			$('#fitem_id_hidenoselect').hide();
+		}
+	}
+	
+//설문조사 >  응답보기
+	if(url.pathname=='/mod/feedback/show_entries.php' && url.search.indexOf('do_show=showentries')>-1 )
+	{
+		$(".initialbar.firstinitial").hide();
+		$(".initialbar.lastinitial").hide();
+	}
+
+	if(url.pathname== '/mod/feedback/import.php') {
+			if(theme_coursemosv2.lang=='ko') {
+				$('#page-mod-feedback-import #fgroup_id_buttonar .felement input#id_submitbutton').before('<div class="fitem"><div class="felement"><span style="color:red; font-weight:bold;">설문조사 모듈에서 작성, 내보내기로 저장된 XML파일만 가져오기 가능합니다.</span></div></div>');
+			} else {
+				$('#page-mod-feedback-import #fgroup_id_buttonar .felement input#id_submitbutton').before('<div class="fitem"><div class="felement"><span style="color:red; font-weight:bold;">File format available: a XML file exported from the Survey module(only)</span></div></div>');
+			}
+	}
+
+
+/********************************************
+        팀플평가(activity_ubpeer)
+*********************************************/
+//팀플평가
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=ubpeer')>-1) || form_modulename.indexOf('ubpeer')>-1) )
+        {
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+        }
+
+        if(url.pathname=='/mod/ubpeer/view.php' ||
+                url.pathname=='/mod/ubpeer/evaluation.php' || 
+                url.pathname=='/mod/ubpeer/options.php' || url.pathname=='/mod/ubpeer/result.php' || 
+                url.pathname=='/mod/ubpeer/status.php' || 
+                (url.pathname=='/course/modedit.php' && form_modulename.indexOf('ubpeer')>-1))
+        {
+                //학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        if(i!=0) $(this).html('');
+                });
+        }
+
+
+/********************************************
+        채팅방(activity_ubchat)
+*********************************************/
+//채팅방
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=ubchat')>-1) || form_modulename.indexOf('ubchat')>-1) )
+        {
+                // 버튼 삭제
+                $('#id_submitbutton2').hide(); 
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+        }
+
+        if(url.pathname=='/mod/ubchat/view.php' ||
+                (url.pathname=='/course/modedit.php' && form_modulename.indexOf('ubchat')>-1))
+        {
+                //학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        if(i!=0) $(this).html('');
+                });
+        }
+
+/********************************************
+        토론방(activity_forum)
+*********************************************/
+//토론방
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=forum')>-1) || form_modulename.indexOf('forum')>-1) )
+        {
+			if(theme_coursemosv2.lang=='ko'){
+				$('#id_name').after('<div style="color:#b92626;">[토론기간설정]은 페이지 아래 <b>[접근제한] > [날짜]</b> 에서 기간형성을 하시기 바랍니다.</div>');
+			} else {
+				$('#id_name').after('<div style="color:#b92626;">[Discussion period] can be setted at the bottom of the page [Restrict access] > [Date]</div>');
+			}
+		$('#id_attachmentswordcounthdr').hide();
+
+		if(url.hostname=='myclass.sch.ac.kr') {
+			$("select[id='id_type'] option[value='eachuser']").remove();
+			$("select[id='id_type'] option[value='single']").remove();
+			$("select[id='id_type'] option[value='qanda']").remove();
+		}
+
+
+		//구독 옵션
+		$('#id_forcesubscribe').val('3');
+		$('#id_subscriptionandtrackinghdr').hide();
+		
+
+		//게시한도
+		$('#id_blockafterheader').hide();
+
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+        }
+
+//토론방 글쓰기
+	if(url.pathname=='/mod/forum/post.php')
+	{
+		$('#fitem_id_discussionsubscribe').hide();
+		$('#fitem_id_mailnow').hide();
+	}
+
+//토론방 보기
+	if(url.pathname=='/mod/forum/view.php')
+	{
+		//$('.lastpost').css('width','170px');
+		$('td.lastpost, th.lastpost').css('width','170px');
+
+	}
+	if(url.pathname=='/mod/forum/view.php' ||
+		url.pathname=='/mod/forum/post.php' || 
+		url.pathname=='/mod/forum/discuss.php' ||
+                (url.pathname=='/course/modedit.php' && form_modulename.indexOf('forum')>-1))
+	{
+                //학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+			if(i!=0) $(this).html('');
+                });
+	}
+
+
+/********************************************
+        게시판(activity_ubboard)
+*********************************************/
+//게시판
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=ubboard')>-1) || form_modulename.indexOf('ubboard')>-1) )
+        {
+                $('#id_etc_settings').removeClass('collapsed');
+
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+        }
+
+	if(url.pathname=='/mod/ubboard/view.php' || url.pathname=='/mod/ubboard/article.php' || url.pathname=='/mod/ubboard/modify.php' || url.pathname=='/mod/ubboard/write.php' || url.pathname=='/mod/ubboard/category.php' || url.pathname=='/mod/ubboard/category_modify.php' || (url.pathname=='/course/modedit.php' && form_modulename.indexOf('ubboard')>-1))
+	{
+		//학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+		$($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        link=$(this).find('a').attr('href');
+                        if(link.indexOf('/admin/roles/assign.php')>-1||link.indexOf('/admin/roles/check.php')>-1||link.indexOf('/filter/')>-1||link.indexOf('/report/log/')>-1||link.indexOf('/backup/')>-1) { $(this).html(''); }
+                });
+	}
+
+/********************************************
+        위키(activity_wiki)
+*********************************************/
+//wiki
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=wiki')>-1) || form_modulename.indexOf('wiki')>-1) )
+	{
+		$('#id_wikifieldset').hide();
+
+		// 버튼 삭제
+		$('#id_submitbutton2').hide();
+		if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+	}
+
+//wiki 편집
+	if(url.pathname=='/mod/wiki/edit.php')
+	{
+		$('#fgroup_id_buttonar #save').css('color','#fff').css('background-color','#337ab7 ').css('border-color','#2e6da4').on("mouseover",function() { $(this).css('background-color','#286090').css('border-color','#204d74');  }).on("mouseout",function() { $(this).css('background-color','#337ab7').css('border-color','#2e6da4');  });
+		$('#fgroup_id_buttonar #preview').css('color','#fff').css('background-color','#5bc0de ').css('border-color','#46b8da ').on("mouseover",function() { $(this).css('background-color','#31b0d5').css('border-color','#269abc');  }).on("mouseout",function() { $(this).css('background-color','#5bc0de').css('border-color','#46b8da');  });
+		
+	}
+
+//wiki 파일
+	if(url.pathname=='/mod/wiki/files.php')
+	{
+		//파일이 등록되었을 경우
+		$('#ygtv0').css('margin-top','20px').css('margin-bottom','20px').css('padding-bottom','20px').css('border-bottom','1px solid #D9D9D9');
+
+		$('div.box div.generalbox').css('text-align','center').css('margin-top','20px').css('margin-bottom','20px');
+		$('div.singlebutton').css('text-align','center');
+		$('div.singlebutton input[type=submit].btn').css('color','#fff').css('background-color','#5cb85c').css('border-color','#4cae4c').on("mouseover",function() { $(this).css('background-color','#449d44').css('border-color','#398439'); }).on("mouseout",function() { $(this).css('background-color','#5cb85c').css('border-color','#4cae4c'); });
+	}	
+
+        if(url.pathname=='/mod/wiki/view.php' ||
+		url.pathname=='/mod/wiki/edit.php' || 
+		url.pathname=='/mod/wiki/comments.php' || url.pathname=='/mod/wiki/editcomments.php' || 
+		url.pathname=='/mod/wiki/history.php' || url.pathname=='/mod/wiki/diff.php' || 
+                url.pathname=='/mod/wiki/map.php' ||
+                url.pathname=='/mod/wiki/files.php' || url.pathname=='/mod/wiki/filesedit.php' || 
+		url.pathname=='/mod/wiki/admin.php' ||
+                (url.pathname=='/course/modedit.php' && form_modulename.indexOf('wiki')>-1))
+        {
+                //학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        if(i!=0) $(this).html('');
+                });
+        }
+
+/********************************************
+        턴잇인(activity_turnitin)
+*********************************************/
+// 턴잇인
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=turnitintooltwo')>-1) ||  ( form_modulename.indexOf('turnitintooltwo')>-1 ) ))
+        {
+                var text_ko="학생들에게 포털에서 메일을 등록하도록 안내해 주세요.";
+                var text_en="Please ask students for their e-mail uploaded at Portal.";
+                var text=(theme_coursemosv2.lang=='ko') ? text_ko:text_en;
+
+                $('#fitem_id_name').before('<div class="alert alert-danger">'+ text +'</div>');
+		$('#id_reportgenspeed').val('2');
+
+                // 버튼 삭제
+                $('#id_submitbutton2').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton').val('저장'); }
+        }
+
+/********************************************
+	파일(resource_file)
+*********************************************/
+// 파일
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=ubfile')>-1) ||  ( form_modulename.indexOf('ubfile')>-1 ) ))
+	{
+		if(theme_coursemosv2.lang=='ko'){
+			if(url.hostname == 'learn.inha.ac.kr'){
+				$('#fitem_id_download > .fselectyesno').append('<div style="color:red; margin-top:10px;">문서의 용량이 15MB 이상인 경우 문서 변환이 원활하지 않을 수 있습니다.<br/>동영상 파일의 경우, 다운로드 미허용 설정이 불가능합니다.</div>')
+			} else {
+				$('#fitem_id_download > .fselectyesno').append('<div style="color:red; margin-top:10px;">문서의 용량이 15MB 이상인 경우 문서 변환이 원활하지 않을 수 있습니다.</div>')
+			}
+			
+		} else {
+			$('#fitem_id_download > .fselectyesno').append('<div style="color:red; margin-top:10px;">Document conversion may not be smooth if the document size is more than 15MB.</div>')
+		}
+		
+		$('#fitem_id_showsize').hide();
+		$("#fitem_id_showtype").hide();
+		setTimeout(function(){ $('div.moreless-actions').hide(); }, 3000);
+
+		$('#id_submitbutton').hide();
+		if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }	
+	}
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=resource')>-1) ||  ( form_modulename.indexOf('resource')>-1 ) ))
+	{
+		$('#id_optionssection').hide();
+
+                $('#id_submitbutton').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+	}
+
+/********************************************
+	URL 링크(resource_url)
+*********************************************/
+// URL 링크
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=url')>-1) || form_modulename.indexOf('url')>-1) )
+	{
+		if(url.hostname!='snowboard.sookmyung.ac.kr') {
+			$('#id_optionssection').hide();
+		}
+		
+		if(url.hostname != 'lms.yc.ac.kr'){ //연암공과대 제외
+			$('#id_parameterssection').hide();
+		}
+
+        $('#id_submitbutton').hide();
+        if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+	}
+
+/********************************************
+        개요(resource_label)
+*********************************************/
+// 개요
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=label')>-1) || form_modulename.indexOf('label')>-1) )
+        {
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }        
+	}
+
+/********************************************
+	웹문서(resource_page)
+*********************************************/
+// 웹문서
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=page')>-1) || form_modulename.indexOf('page')>-1) )
+	{
+		$('#id_appearancehdr').hide();
+
+		$('#id_submitbutton').hide();
+		if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+	}
+
+        if(url.pathname=='/mod/page/view.php' ||
+                (url.pathname=='/course/modedit.php' && form_modulename.indexOf('page')>-1))
+        {
+                //학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        if(i!=0) $(this).html('');
+                });
+        }
+	if(url.pathname=='/mod/page/view.php')
+	{
+		var text=(theme_coursemosv2.lang=='ko') ? '돌아가기':'Go back';
+		$('div.modified').after('<div style="text-align:center"><button class="btn btn-info" onclick="history.go(-1);">'+text+'</button></div>');
+	}
+
+/********************************************
+	폴더(resource_folder)
+*********************************************/
+// 폴더
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=folder')>-1) || form_modulename.indexOf('folder')>-1) )
+	{
+		if(theme_coursemosv2.lang=='ko')
+		{
+			$('#fitem_id_files label').text('파일선택');
+		}
+		$('#fitem_id_display').hide();
+		$('#fitem_id_showexpanded').hide();
+
+		$('#id_submitbutton').hide();
+		if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+	}
+
+	if(url.pathname=='/mod/folder/view.php')
+	{
+		//학습활동 블록 숨김
+                $('div.block-quick-mod').addClass('hidden');
+
+                $($("li",$("#settingsnav ul")).get(0)).css('background-color','#F5EFD7');
+                var link;
+                $("li",$('#settingsnav li.type_setting ul')).each(function(i) {
+                        link=$(this).find('a').attr('href');
+                        if(link.indexOf('/admin/roles/')>-1||link.indexOf('/filter/')>-1||link.indexOf('/report/log/')>-1||link.indexOf('/backup/')>-1) { $(this).html(''); }
+                });
+		
+		$('div.singlebutton input[type=submit]').css('color','#fff').css('background-color','#5bc0de ').css('border-color','#46b8da ').on("mouseover",function() { $(this).css('background-color','#31b0d5').css('border-color','#269abc');  }).on("mouseout",function() { $(this).css('background-color','#5bc0de').css('border-color','#46b8da');  });
+		
+	}
+
+/********************************************
+	동영상(resource_vod)
+*********************************************/
+//vod
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=vod')>-1) || form_modulename.indexOf('vod')>-1) )
+	{
+		//$('#fitem_id_restricted').hide();
+		$('#id_showplaytime').prop('checked', true);
+		$('#fitem_id_showsize').hide();
+		$('#fitem_id_showplaytime').hide();
+		$('#id_vod_popup').addClass('collapsed');
+
+                $('#id_submitbutton').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+	}
+
+/********************************************
+        econtents (resource_econtents)
+*********************************************/
+// econtents
+        if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=econtents')>-1) || form_modulename.indexOf('econtents')>-1) )
+        {
+                $('#id_submitbutton').hide();
+                if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+        }
+
+/********************************************
+        콘텐츠 제작도구
+*********************************************/
+	if(url.pathname=='/course/modedit.php' && ( (url.search.indexOf('?add=xncommons')>-1) || form_modulename.indexOf('xncommons')>-1) )  {
+		// 버튼 삭제
+		$('#id_submitbutton').hide(); 
+		if(theme_coursemosv2.lang=='ko') { $('#id_submitbutton2').val('저장'); }
+	}
+
+	// 팀설정 
+	if(url.pathname=='/group/autogroup.php'){
+		$("#fitem_id_groupid").hide();
+		$("#fitem_id_notingroup").hide();
+	}
+
+
+	//강좌 설정 - 유비온 일반
+	//이수과정 추적
+	if(url.pathname=='/local/ubion/setting/course.php'){
+		$("#enablecompletion").parent().parent().hide();
+	}
+
+	//강좌설정 - 고급설정
+	if(url.pathname=='/course/edit.php'){
+		$("#id_descriptionhdr").hide();
+		$("#id_courseformathdr").hide();
+		$("#fitem_id_lang").hide();
+		
+	}
+
+
+	// 성적
+	// 보기
+	if(url.pathname=='/grade/report/grader/index.php') {
+		var text_ko="합계점수는 직접 입력하실 수 없습니다. 성적항목관리에서 항목을 추가하신 후 점수를 입력하세요.";
+		var text_en="Cannot insert total grade. Add grade item at 'Setup' page first and enter grade.";
+
+		var text_ko2="입력한 점수는 자동저장 되므로 저장 버튼을 누를 필요가 없습니다.";
+		var text_en2="Grade that you entered can be saved automatically, so you don't need to click 'Save' button.";
+
+		var text=(theme_coursemosv2.lang=='ko') ? text_ko:text_en;
+		var text2=(theme_coursemosv2.lang=='ko') ? text_ko2:text_en2;
+
+		$('div.search_count h3').before('<div class="alert alert-danger">'+ text +'</div>');
+		if(url.hostname != 'course.pcu.ac.kr') {
+			$('div.submit input').after('<span style="color:#CC0000;font-weight:bold;margin-left:20px;">' + text2  + '</span>');
+		}
+	}
+
+	// 카테고리 설정
+	if(url.pathname=='/grade/edit/tree/index.php') {
+	//	$('#gradetreeform .generaltable .column-weight').hide();
+	//	$('#gradetreeform .generaltable .column-select').hide();
+		$('#gradetreeform .generaltable .gradeitemdescription').hide();	
+
+		$('#gradetreeform .generaltable .textmenu').html('<img src="/theme/image.php/coursemosv2/core/1468025184/i/settings" />');
+		$('#gradetreeform .generaltable .column-actions').css('text-align','center');
+	//	$('#gradetreeform .generaltable .column-range').css('text-align','center');
+
+	//	$('#gradetreesubmit').hide();
+	}
+
+	// 개인성적표
+	if(url.pathname=='/grade/report/user/index.php') {
+		$('.gradeitemdescription').hide();
+	}
+
+	// 성적이력
+	if(url.pathname=='/grade/report/history/index.php'){
+		$('#mform2 fieldset div.fitemtitle').css('width','200px');
+	}
+
+	// 환경설정
+	if(url.pathname=='/grade/edit/settings/index.php'){
+		$('#id_general').hide();
+		$('#fitem_id_report_user_showgrade').hide();
+	}
+
+	// 성적항목관리>성적부설정
+	if(url.pathname=='/grade/report/grader/preferences.php'){
+		$('#id_prefshow').hide();
+		$('#id_prefrows').hide();
+	}
+
+	// 척도
+	if(url.pathname=='/grade/edit/scale/edit.php'){
+		$('#fitem_id_standard').hide();
+		$('#fitem_id_description_editor').hide();
+	}
+
+	// 가져오기
+	// csv
+	if(url.pathname=='/grade/import/csv/index.php' || url.pathname=='/grade/import/direct/index.php')
+	{
+		$('#fitem_id_verbosescales').hide();
+		$('#fitem_id_previewrows').hide();
+		$('#fitem_id_forceimport').hide();
+
+		$('#id_mapto').val("useridnumber").prop("selected", true);
+		$('#fitem_id_mapto').hide();
+	}
+
+	// 내보내기
+	if(url.pathname=='/grade/export/xls/index.php')
+	{
+		$('.tabs-sub').hide();
+		$('#fitem_id_export_feedback').hide();
+		$('#fitem_id_export_onlyactive').hide();
+	}
+
+
+	// *****************************************************************************
+	// 배제대학교 & 경기대학교
+	// *****************************************************************************
+	if(url.hostname == 'course.pcu.ac.kr' || url.hostname == 'kgulms.moodler.kr' || url.hostname == 'lms.kyonggi.ac.kr' || url.hostname == 'kedilms.jbnu.ac.kr' || url.hostname == 'jbec.jbnu.ac.kr' || url.hostname == 'lms.dsu.ac.kr' ) {
+		switch (url.pathname)
+		{
+
+			// =====================================================================
+			// 과제물
+			// =====================================================================
+			case '/mod/assign/view.php':
+				var course_home_url = $('.path-mod-assign .navbar .coursename h1 a').attr('href');
+				$('body').not('.mobiletheme').find('.submissionlinks').prepend('<a href="'+course_home_url+'" class="btn btn-success">강의실 홈</a>&nbsp;');
+				// 전북대 과제 점수 그래프
+				if(url.hostname == 'kedilms.jbnu.ac.kr'){
+					var graph_url = String(url).replace("view", "graph");
+					$('body').not('.mobiletheme').find('.submissionlinks').append(' <a href="'+graph_url+'" class="btn btn-primary" >점수 그래프</a>&nbsp;');
+				}
+				break;
+
+			// =====================================================================
+			// 설문&피드백
+			// =====================================================================
+			case '/mod/feedback/view.php':
+				$('.mobiletheme #maincontent+h2').css({'font-size': '14px'});
+				$('.box .complete-feedback a').css({'border': '1px solid #3d1f4e', 'display': 'inline-block', 'padding': '4px 10px', 'background-color': '#552c6d', 'color': 'white', 'font-size': '14px', 'font-weight': 'bold', 'border-radius': '4px', 'text-decoration': 'none' });
+				$('.box .complete-feedback a').text('설문 참여');
+				$('.mobiletheme .box .complete-feedback a').css({'position': 'fixed', 'left': '0', 'right': '0', 'bottom': '0px', 'z-index':'99999', 'text-align': 'center', 'line-height': '35px'});
+				break;
+
+			case '/mod/forum/view.php':
+			// 포럼 성적 버턴 활성화
+			if ((url.search.indexOf('?id=')>-1) || (url.search.indexOf('?f=')>-1) ||  ( form_modulename.indexOf('forum')>-1 )) {
+				$.ajax({
+					url: '/local/ubion/mod/forum/grade_button.php'+url.search,
+					cache: false
+				})
+					.done(function( html ) {
+						$('body#page-mod-forum-view form#newdiscussionform div').prepend(html);
+				});
+				// $('body#page-mod-forum-view form#newdiscussionform div').prepend('<div><a href="/local/ubion/Asite/modules/activity/forum/grade.php'+url.search+'" class="btn btn-default btn-primary" style="display:inline-block;">점수 부여</a></div>');
+			}
+			break;
+		
+			// =====================================================================
+			// 성적표
+			// =====================================================================
+			case '/grade/report/grader/index.php':
+				$('.path-grade ul.tabs-sub li.tab_li_history').hide(); // "성적이력"탭 숨김
+				$('.path-grade ul.tabs-sub li.tab_li_outcomes').hide(); // "학습성과 보고서"탭 숨김
+				var message_buf = $('#page-grade-report-grader-index .search_count .alert-danger').html();
+				$('#page-grade-report-grader-index .search_count .alert-danger').html(message_buf+'<br>점수 편집이 필요하시면 화면 상단의 편집 버튼을 누르신후 점수를 수정후 하단의 저장 버튼을 누르시면 됩니다.');
+			case '/grade/edit/tree/index.php':
+			case '/grade/import/csv/index.php':
+			case '/grade/export/xls/index.php':
+				$('#page-grade-edit-tree-index .buttons .singlebutton form div input[type="submit"]').hide(); // "학습성과 항목 추가" 버튼 숨김
+				$('#page-grade-edit-tree-index #modal-content .buttons .singlebutton form div input[type="submit"]').show(); // "학습성과 항목 추가" 버튼 숨김
+				$('.path-grade ul.tabs-main li.tab_li_scale').hide(); // "척도"탭 숨김
+				$('.path-grade ul.tabs-main li.tab_li_outcome').hide(); // "학습성과"탭 숨김
+				// $('#page-grade-export-xls-index form.mform #fgroup_id_displaytypes #id_display_percentage').attr('checked','checked'); // 엑셀다운로드 백분율 강제 체크
+			break;
+
+			// =====================================================================
+			// mod_quiz
+			// =====================================================================
+			case '/question/question.php':
+				// 점수반영비율 : 없음, 50%, 100%만 표시되도록..
+				// $('#page-question-type-multichoice #id_answerhdr .fitem_fselect .fselect select option').each(function(e) { switch($(this).val()) { case '0.0': case '0.5': case '1.0': break; default: $(this).attr('hidden', 'hidden'); } });
+
+				// 문제은행 > 문제유형 STACK > OPTION
+				$('#page-question-type-stack form #id_optionsheader .fcontainer #fitem_id_prtcorrect').hide();
+				$('#page-question-type-stack form #id_optionsheader .fcontainer #fitem_id_prtpartiallycorrect').hide();
+				$('#page-question-type-stack form #id_optionsheader .fcontainer #fitem_id_prtincorrect').hide();
+			break;
+			// =====================================================================
+			// 강좌설정
+			// =====================================================================
+			case '/course/modedit.php':
+				// $('#page-mod-quiz-mod #fitem_id_availabilityconditionsjson .availability-field .availability_profile .availability-group select.custom-select option').each(function(e) { switch($(this).val()) { case '0.0': case '0.5': case '1.0': break; default: $(this).attr('hidden', 'hidden'); } });
+				$('body#page-mod-forum-mod form#mform1 #id_discussionlocking').hide();
+				
+				// 동신대 퀴즈 활동 추가 설정(수정자:jeen / 요청자:choi_190308)
+				if(url.hostname == 'lms.dsu.ac.kr' && url.search.indexOf('?add=quiz') > -1){
+
+					// 퀴즈 기간 설정 - '시작일시' & '종료일시' 활성화
+					$("input:checkbox[id='id_timeopen_enabled']").trigger("click");
+					$("input:checkbox[id='id_timeclose_enabled']").trigger("click");
+					
+					// 현재 섹션의 주차 수로 퀴즈 시작&종료 기간 설정
+					var sectionDate = $('h2').text();
+					var startIndex = sectionDate.indexOf('[');
+					var endIndex = sectionDate.indexOf(']');
+
+					if(startIndex>-1 && endIndex>-1){
+						sectionDate = sectionDate.substring(startIndex+1,endIndex);
+					
+						var firstIndex = sectionDate.indexOf('월');
+						var startMonth = sectionDate.substring(0,firstIndex);
+
+						sectionDate = sectionDate.substring(firstIndex+1,sectionDate.length);
+						
+						secondIndex = sectionDate.indexOf('일');
+						var startDay = sectionDate.substring(0,secondIndex);
+						if(startDay.substr(0,1) == '0'){
+							startDay = startDay.substr(1,startDay.length);
+						}
+
+						thirdIndex = sectionDate.indexOf('-');
+						sectionDate = sectionDate.substring(thirdIndex+2,sectionDate.length);
+
+						var endMonth = sectionDate.substring(0,firstIndex);
+
+						var endDay = sectionDate.substring(firstIndex+1,sectionDate.length-1);
+						if(endDay.substr(0,1) == '0'){
+							endDay = endDay.substr(1,endDay.length);
+						}
+
+						$('#id_timeopen_month').val(startMonth).prop("selected", true);
+						$('#id_timeopen_day').val(startDay).prop("selected", true);
+						$('#id_timeclose_month').val(endMonth).prop("selected", true);
+						$('#id_timeclose_day').val(endDay).prop("selected", true);
+					}
+					
+					// 시작일시 시간 00:00
+					$('#id_timeopen_hour').val('0').prop("selected", true);
+					$('#id_timeopen_minute').val('0').prop("selected", true);
+
+					// 종료일시 시간 23:59
+					$('#id_timeclose_hour').val('23').prop("selected", true);
+					$('#id_timeclose_minute').val('59').prop("selected", true);
+				}
+			break;
+			// =====================================================================
+			// 퀴즈
+			// =====================================================================
+			case '/mod/quiz/view.php':
+				$('#page-mod-quiz-view #region-main table.quizattemptsummary .c1').hide(); // 테이블의 점수항목 숨김처리
+				if(url.hostname == 'lms.dsu.ac.kr'){	// 동신대
+					$('.mobiletheme .continuebutton').hide();	// 모바일화면 - '강좌로 돌아가기' 버튼 숨김
+				}
+			break;
+			case '/mod/quiz/report.php':
+				$('#page-mod-quiz-report #id_preferencespage .fcontainer #fitem_id_onlyregraded').after($('#page-mod-quiz-report #id_preferencesuser .fcontainer').html());
+				$('#page-mod-quiz-report #id_preferencesuser').remove();
+
+				// 전체 선택 영역 상위로 복사
+				$('#page-mod-quiz-report .resettable').css('height', '30px');
+				$('#page-mod-quiz-report form.dataformatselector').css('float', 'right');
+				$('#page-mod-quiz-report #tablecontainer').css('clear', 'both');
+				// $('#page-mod-quiz-report #tablecontainer .no-overflow').before('<div id="copy_commands" style="position:relative; top:-35px; line-height:0px; height:0; text-align:left;"></div>');
+				$('#page-mod-quiz-report #tablecontainer .no-overflow').before('<div id="copy_commands" style="text-align:left;"></div>');
+				$('#page-mod-quiz-report #tablecontainer #copy_commands').html($('#page-mod-quiz-report form#attemptsform #commands').html());
+				$(document).on('change', '#copy_commands #formactionid', function(e) {
+					var courseid = $("#courseid").attr("value");
+					$("input[name=id]").attr("value", courseid);
+					$("#attemptsform").attr("action","/local/ubmessage/" + $(this).val() + ".php").submit();
+				 }); 
+			break;
+		}
+	}
+	// *****************************************************************************
+	// 경기대학교
+	// *****************************************************************************
+	if(url.hostname == 'lms.kyonggi.ac.kr'){
+		if(url.pathname == '/course/view.php'){
+			$('.smallicon').attr('style','min-width : 20px');
+			$('.text-ubstrap').before('출석인정기간 :')
+		}
+		// #Jeenlee - 성적부>내보내기 엑셀다운로드
+		if(url.pathname == '/grade/export/xls/index.php'){
+			if(url.search.indexOf('id=') > -1){
+				let paramCourse = url.search.substr(url.search.indexOf('?'));
+				$('#id_submitbutton').after('<input type="button" id="grade_export_excel1" class="btn btn-success btn-exceldown" style="margin-left:10px;" value="다운로드(성적입력)"></a>');
+				
+				$(document).ready(function() {
+					let iframe_grade_export_excel1 = $('<iframe id="iframe_grade_export_excel1" style="display:none;"></iframe>');
+					iframe_grade_export_excel1.appendTo('body')
+
+					let iframe_grade_export_excel2 = $('<iframe id="iframe_grade_export_excel2" style="display:none;"></iframe>');
+					iframe_grade_export_excel2.appendTo('body')
+
+					let iframe_grade_export_excel3 = $('<iframe id="iframe_grade_export_excel3" style="display:none;"></iframe>');
+					iframe_grade_export_excel3.appendTo('body')
+					
+					$('#grade_export_excel1').click(function(){
+						$('#iframe_grade_export_excel1').attr('src', '/local/ubion/jeenlee/grade_export_excel1.php'+ paramCourse);
+						$('#iframe_grade_export_excel2').attr('src', '/local/ubion/jeenlee/grade_export_excel2.php'+ paramCourse);
+						$('#iframe_grade_export_excel3').attr('src', '/local/ubion/jeenlee/grade_export_excel3.php'+ paramCourse);
+					});
+				})
+			}
+		}
+	}
+	// *****************************************************************************
+	// 동신대학교
+	// *****************************************************************************
+	if(url.hostname == 'lms.dsu.ac.kr') {
+		switch (url.pathname)
+		{
+			case '/local/ubion/user/first.php': //개인정보 문구 수정
+				var modifyText = $("#page-content-wrap .privacy_item_detail").text();
+				modifyText = modifyText.replace("그러나 동의를 거부할 경우 e-러닝센터에서 제공하는 e-러닝센터을 이용할 수 없음을 참고하시기 바랍니다.", "그러나 동의를 거부할 경우 e-러닝센터에서 제공하는 <u>강좌 정보 및 e-러닝센터 프로그램</u>을 이용할 수 없음을 참고하시기 바랍니다.");
+				$("#page-content-wrap .privacy_item_detail").html(modifyText);
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 항공대학교
+	// *****************************************************************************
+	if(url.hostname == 'lms.kau.ac.kr') {
+		
+	}
+
+	// *****************************************************************************
+	// 한성대학교
+	// *****************************************************************************
+	if(url.hostname == 'learn.hansung.ac.kr') {
+
+		//강좌 전체보기 옆 안내문구 추가
+		$("#region-main div.progress_courses > .course_lists").before('<div style="color:red; margin-bottom:10px; font-weight:bold;">지난 학기 강좌는 "나의 강좌 >> 수강 강좌 >> 연도 학기"에서 조회 가능합니다.</div>');
+
+		switch (url.pathname)
+		{
+			case '/course/modedit.php':
+				if($('#page-mod-quiz-mod').length > 0){
+					$('#id_timing #fitem_id_timeopen').before("<div id='id_timing_text' style='color:#0000FF; text-align:center; margin-bottom:15px;'><p>'퀴즈 기간'을 활성화 하지 않을 경우, 학생들에게 해당 퀴즈가 바로 노출되니 참고 부탁 드립니다.</p></div>");
+				}
+			break;
+
+			case '/course/view.php':
+				$('.mediaplugin_youtube').css("width","100%")
+			break;
+
+			case '/question/edit.php':
+				$('#advancedsearch_caption').hide();
+				$('#advancedsearch_inner div').eq(1).hide();
+			break;
+
+			case '/grade/report/grader/index.php':
+			case '/grade/edit/tree/index.php':
+			case '/report/ubcompletion/progress.php':
+				//온라인출석부 - 문구추가
+				$("#region-main span.notifications").append("<div style='margin-top:10px;color:#d9534f;font-weight:bold;'>한성E-class의 온라인 출석부와 성적부는 종합정보시스템에 연동되지 않으므로, 직접 종합정보시스템에 입력하셔야 합니다.</div><br>");
+			break;
+			case '/question/question.php':
+				if($('#page-question-type-multichoiceset').length > 0){
+					//다수시도
+					$('#id_multitriesheader .femptylabel').hide();
+					$('#id_multitriesheader .fitem_feditor').hide();
+					$('#id_multitriesheader .fitem_fgroup').hide();
+					$('#id_addhint').hide();
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 울산대학교
+	// *****************************************************************************
+	if(url.hostname == 'ulms.ulsan.ac.kr') {
+		switch (url.pathname)
+		{
+			// =====================================================================
+			// 과제물
+			// =====================================================================
+			case '/course/view.php':
+				$('.mediaplugin_youtube').css("width","100%");
+			break;
+
+			case '/course/modedit.php':
+				$('#id_assignsubmission_file_maxfiles').val("5").prop("selected", true);
+				// 동시 접속 차단 옵션 비활성화
+				$('#id_onesessionenabled').attr('disabled','true');
+			break;
+
+		}
+	}
+
+	// *****************************************************************************
+	// 목포대학교
+	// *****************************************************************************
+	if(url.hostname == 'lms.mokpo.ac.kr') {
+		switch (url.pathname)
+		{
+			// =====================================================================
+			// 과제물
+			// =====================================================================
+			case '/course/view.php':
+				$('.mediaplugin_youtube').css("width","100%")
+				if(url.search.indexOf('&notifyeditingon=1')>-1){	//수정모드일때
+					$("span.menu-action-text").each(function() { $(this).html($(this).html() == "설정" ? "수정" : $(this).html()); });
+				}
+				break;
+			case '/course/editsection.php':		// 강좌-주차명편집-영역명 사이즈 변경
+				$('input[name = usedefaultname]').before('<br/>');
+				$('#id_name').css("maxWidth","100%");
+				$('#id_name').css("width","100%");
+				break;
+			case '/mod/vod/index.php':
+				// 프린트 출력(인쇄-미리보기)화면 정리
+				$('#page').after('<style> @media print { #page-header {display:none;} #page-lnb {display:none;} .header.c0 {width:30%;} .header.c1 {width:40%;} .header.c2 {width:30%;} #page-mask {margin-left:0 !important;} .table {table-layout:fixed; word-break:break-all;} }	</style>');
+			break;
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-grader').length > 0){
+					$('.currentgrade a').attr('disabled','true');
+					console.log($('.currentgrade').children().text());
+				}
+			break;
+			case '/backup/import.php':	// 강좌->가져오기
+				if($('#page-backup-import').length > 0){
+					$('.path-backup .mform .grouped_settings .fitem .felement').css('width','auto');
+
+					//$('#id_rootsettings').css('text-align','center');
+					//$('#id_rootsettings .fcontainer').css('display','inline-block');
+					//$('.mform .fitem .felement').css('text-align','left');
+					
+					$('.path-backup .mform .grouped_settings.section_level .section_level .fitemtitle').css('width','auto');
+					$('.path-backup .mform .grouped_settings .fitem .fitemtitle').css('width','75%');
+					/**
+					$('.path-backup #page #page-container #page-content #region-main .mform .fcontainer .root_setting .fitemtitle').css('width','auto');
+					$('.path-backup #page #page-container #page-content #region-main .mform .fcontainer .root_setting .felement').css('width','auto');
+					**/
+				}
+			break;
+			case '/local/ubmessage/email_send.php':
+				if($('#page-local-ubmessage-email_send').length > 0){
+					$('#region-main #maincontent').next().after('<div style="margin-bottom:10px;">※ 교내 웹메일 사용자에게만 메일 발송</div>');
+				}				
+			break;
+			case '/mod/feedback/view.php':	// 설문조사 설명 화면
+				if($('#page-mod-feedback-view').length > 0){
+					$('h2 a .smallicon').hide();	// 미리보기 아이콘 숨김
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 강남대학교
+	// *****************************************************************************
+	if(url.hostname == 'ecampus.kangnam.ac.kr') {
+		switch (url.pathname)
+		{
+			case '/mod/ubboard/write.php':
+				// 게시판 비밀글 (수정자: ellena)
+				$('#secret').removeAttr('disabled');
+				$("#secret").attr("checked", false);
+			break;
+
+			// =====================================================================
+			// 과제물
+			// =====================================================================
+			case '/course/view.php':
+				// 이번주 강의 hide by 진이 - 요청자 : 초이(19.01.03)
+				$('.course_box.course_box_current').hide();
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 전북대(개발)
+	// *****************************************************************************
+	if(url.hostname == 'jbnulms.moodler.kr') { 
+		switch (url.pathname){
+			// =====================================================================
+			// 과제물
+			// =====================================================================
+			case '/mod/assign/view.php':
+				var course_home_url = $('.path-mod-assign .navbar .coursename h1 a').attr('href');
+				$('body').not('.mobiletheme').find('.submissionlinks').prepend('<a href="'+course_home_url+'" class="btn btn-success">강의실 홈</a>&nbsp;');
+				break;
+		}
+	}
+	
+	// *****************************************************************************
+	// 건강보험심사평가원(운영)
+	// *****************************************************************************
+	if(url.hostname == 'edu.hira.or.kr') {
+
+		//강좌 클릭 시, 배너 숨김처리 
+		$("document").ready(function(){
+			hideBanner2();
+		});
+		
+		$(window).resize(function(){
+			hideBanner2();
+		
+		});
+		
+		function hideBanner2(){
+			var sideWidth = $("#page-lnb").width();
+			if(sideWidth == "60"){
+				$(".banner2").parent().parent().css("display","none");
+			}else{
+				$(".banner2").parent().parent().css("display","");   
+			}
+		
+		}
+		switch (url.pathname){
+			// =====================================================================
+			// 과제물
+			// =====================================================================
+			case '/mod/assign/view.php':
+				$('.btn-assgin-status-list').hide();	//assign_status 숨김
+			break;
+			case '/course/view.php':
+				$('#page #page-mask #page-container #page-content #region-main .course-content .course_box .topics .section .content .sectionname').first().hide();	// 강의개요섹션의 강의개요 숨김
+			break;
+
+			//ubonline Start
+			case '/local/ubonline/':	//교육과정>수강신청 초기화면
+				if($('#page-local_ubonline').length > 0){
+					$('#c_50').after($('#c_105'));	// '의료자원관리이해2' 를 '의료자원관리이해1' 옆으로 이동
+					$('#c_118').after($('#c_173'));	// '계약업무이해2' 를 '계약업무이해1' 옆으로 이동
+					$('#c_278').after($('#c_313'));	// '적정성평가의이해' 를 '이의신청심판청구업무이해' 다음으로 이동
+					$('#c_655').after($('#c_681'));	// '신포괄수가제도' 를 '질병군 포괄수가제도' 다음으로 이동
+					$('#c_660').after($('#c_686'));	// '약제관리2' 를 '약제관리1' 다음으로 이동
+				}
+			break;
+			case '/local/ubonline/index.php':	// 교육과정>수강신청 탭 이동 후 화면
+				if($('#page-local_ubonline').length > 0){
+					$('#c_50').after($('#c_105'));	// '의료자원관리이해2' 를 '의료자원관리이해1' 옆으로 이동
+					$('#c_118').after($('#c_173'));	// '계약업무이해2' 를 '계약업무이해1' 옆으로 이동
+					$('#c_278').after($('#c_313'));	// '적정성평가의이해' 를 '이의신청심판청구업무이해' 다음으로 이동
+					$('#c_655').after($('#c_681'));	// '신포괄수가제도' 를 '질병군 포괄수가제도' 다음으로 이동
+					$('#c_660').after($('#c_686'));	// '약제관리2' 를 '약제관리1' 다음으로 이동
+				}
+			break;
+			//ubonline End
+
+			case '/user/user_edit.php':	//유저>개인정보수정
+				if($('#page-user-edit').length > 0){
+					//유저가 패스워드 제외한 항목 수정불가하도록 설정
+					$('#id_firstname').attr('disabled', 'true');
+					$('#id_lastname').attr('disabled', 'true');
+					$('#id_institution').attr('disabled', 'true');
+					$('#id_department').attr('disabled', 'true');
+					$('#id_phone').attr('disabled', 'true');
+					$('#fitem_id_email').hide();
+					$('#fitem_id_phone').hide();
+					$('#fitem_id_institution .fitemtitle label').text('직급')	//소속기관->직급
+					$('#fitem_id_department .fitemtitle label').text('직종')	//소속기관->직급
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 연암공대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.yc.ac.kr'){
+		switch (url.pathname){
+			case '/course/modedit.php':
+				if($('#page-mod-assign-mod').length > 0){					
+					$('#id_cutoffdate_year').val($('#id_duedate_year').val()).prop('selected','true');
+					$('#id_cutoffdate_month').val($('#id_duedate_month').val()).prop('selected','true');
+					$('#id_cutoffdate_day').val($('#id_duedate_day').val()).prop('selected','true');
+					$('#id_cutoffdate_hour').val($('#id_duedate_hour').val()).prop('selected','true');
+					$('#id_cutoffdate_minute').val($('#id_duedate_minute').val()).prop('selected','true');
+				}
+			break;
+			case '/mod/ubchat/logs.php':
+                if($('#page-mod-ubchat-view').length > 0){
+                    // IE환경에서 채팅방-대화로그보기 스크롤바 생성
+                    $('#page-mod-ubchat-view').css('height','100%').css('overflow','hidden');
+                    $('#page-mod-ubchat-view div[role=main]').css('position','relative').css('width','100%').css('height','100%');
+                    $('#page-mod-ubchat-view .chat_logs').css('overflow-y','auto').css('position','absolute').css('bottom','0px').css('top','0px').css('left','0px').css('right','0px');
+                }
+            break;
+		}
+	}
+
+	// *****************************************************************************
+	// 연암대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.yonam.ac.kr'){
+		switch (url.pathname){
+			case '/course/edit.php':	// 강좌 설정 편집
+				$('#fitem_id_shortname').hide();	// 강좌명 약어(영문)
+				$('#fitem_id_category').hide();		// 강좌 카테고리
+				$('#fitem_id_visible').hide();		// 보기 설정
+				$('#fitem_id_idnumber').hide();		// 강좌 ID 번호
+			break;
+			case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+				$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			break;
+			case '/course/modedit.php':
+				$("#id_timeopen_enabled").attr("checked", true);
+				$("#id_timeclose_enabled").attr("checked", true);
+				//console.log('test');
+			break;
+			case '/mod/quiz/edit.php':
+				$(".cm-edit-action").each(function(idx,val){
+						var dataAction = $(this).data('action');
+					
+						if(dataAction == 'shuffle_questions'){
+							var checkedState = $(this).prop('checked');
+							console.log(checkedState)
+							if(!checkedState){
+								$(this).click(); 
+								
+							}
+						}
+				});
+			break;
+			case '/mod/quiz/report.php': //퀴즈>결과>성적 - 보고서 설정을 보고서 포함내역으로 옮김
+				$('#page-mod-quiz-report #id_preferencespage .fcontainer #fitem_id_onlyregraded').after($('#page-mod-quiz-report #id_preferencesuser .fcontainer').html());
+				$('#page-mod-quiz-report #id_preferencesuser').remove();
+
+				// 전체 선택 영역 상위로 복사
+				$('#page-mod-quiz-report .resettable').css('height', '30px');
+				$('#page-mod-quiz-report form.dataformatselector').css('float', 'right');
+				$('#page-mod-quiz-report #tablecontainer').css('clear', 'both');
+				// $('#page-mod-quiz-report #tablecontainer .no-overflow').before('<div id="copy_commands" style="position:relative; top:-35px; line-height:0px; height:0; text-align:left;"></div>');
+				$('#page-mod-quiz-report #tablecontainer .no-overflow').before('<div id="copy_commands" style="text-align:left;"></div>');
+				$('#page-mod-quiz-report #tablecontainer #copy_commands').html($('#page-mod-quiz-report form#attemptsform #commands').html());
+				$(document).on('change', '#copy_commands #formactionid', function(e) {
+					var courseid = $("#courseid").attr("value");
+					$("input[name=id]").attr("value", courseid);
+					$("#attemptsform").attr("action","/local/ubmessage/" + $(this).val() + ".php").submit();
+				}); 
+				if(url.search.indexOf('&mode=overview')>-1 || url.search.indexOf('&mode=responses')>-1) {
+					$('#region-main h2').next().addClass('alert').addClass('alert-success').css('margin-left','0px').css('font-weight','bold');
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 부산카톨릭대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.cup.ac.kr'){
+		switch (url.pathname){
+			case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+				$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			break;
+		}
+	}
+	
+
+	// *****************************************************************************
+	// 우석대(개발)
+	// *****************************************************************************
+	if(url.hostname == 'wsulms.moodler.kr'){
+		switch (url.pathname){
+			case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+				$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 우석대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'smart.woosuk.ac.kr'){
+		switch (url.pathname){
+			case '/course/modedit.php':
+				if($('#page-mod-assign-mod').length > 0){
+					$('#fitem_id_assignsubmission_file_maxsizebytes').hide();
+				}				
+			break;
+
+			case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+				$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			break;
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-view').length > 0){
+					$('.btn-assgin-status-list').remove();
+				}
+			break;
+
+			// [답안제출] 버튼 > [답안저장]으로 변경
+			case '/mod/quiz/attempt.php':
+			case '/mod/quiz/summary.php' :
+				$("#mod_quiz_navblock .content .othernav a.btn-warning").text("답안 저장");
+			break;
+
+			case '/mod/quiz/report.php':
+				//퀴즈>결과>성적 - 보고서 설정을 보고서 포함내역으로 옮김
+				if($('#page-mod-quiz-report #id_preferencespage .fcontainer #fitem_id_onlyregraded').text()!==""){
+					$('#page-mod-quiz-report #id_preferencespage .fcontainer #fitem_id_onlyregraded').after($('#page-mod-quiz-report #id_preferencesuser .fcontainer').html());					
+				} else {
+					$('#page-mod-quiz-report #id_preferencespage .fcontainer #fgroup_id_stateoptions').after($('#page-mod-quiz-report #id_preferencesuser .fcontainer').html());
+				}
+				$('#page-mod-quiz-report #id_preferencesuser').remove();
+				$('#region-main h2').next().addClass('alert').addClass('alert-success').css('margin-left','0px').css('font-weight','bold');
+
+				// 전체 선택 영역 상위로 복사
+				$('#page-mod-quiz-report .resettable').css('height', '30px');
+				$('#page-mod-quiz-report form.dataformatselector').css('float', 'right');
+				$('#page-mod-quiz-report #tablecontainer').css('clear', 'both');
+				// $('#page-mod-quiz-report #tablecontainer .no-overflow').before('<div id="copy_commands" style="position:relative; top:-35px; line-height:0px; height:0; text-align:left;"></div>');
+				$('#page-mod-quiz-report #tablecontainer .no-overflow').before('<div id="copy_commands" style="text-align:left;"></div>');
+				$('#page-mod-quiz-report #tablecontainer #copy_commands').html($('#page-mod-quiz-report form#attemptsform #commands').html());
+				$(document).on('change', '#copy_commands #formactionid', function(e) {
+					var courseid = $("#courseid").attr("value");
+					$("input[name=id]").attr("value", courseid);
+					$("#attemptsform").attr("action","/local/ubmessage/" + $(this).val() + ".php").submit();
+				}); 
+				if(url.search.indexOf('&mode=overview')>-1 || url.search.indexOf('&mode=responses')>-1) {
+					$('#region-main h2').next().addClass('alert').addClass('alert-success').css('margin-left','0px').css('font-weight','bold');
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 협성대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'uwlms.uhs.ac.kr'){
+
+		//강좌 클릭 시, 배너 숨김처리 
+		$("document").ready(function(){
+			hideBanner2();
+		});
+				
+		$(window).resize(function(){
+			hideBanner2();		
+		})
+				
+		function hideBanner2(){
+			var sideWidth = $("#page-lnb").width();
+			if(sideWidth == "60"){
+				$(".ctl_info2").parent().parent().css("display","none");
+			}else{
+				$(".ctl_info2").parent().parent().css("display","");   
+			}
+		}
+
+		switch (url.pathname){
+			case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+				$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			break;
+		}
+
+	}
+
+	// *****************************************************************************
+	// 상지대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'cyber.sangji.ac.kr'){
+		switch (url.pathname){
+			case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+				$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			break;
+			//추가
+			case '/course/modedit.php':
+				if($('#page-mod-vod-mod').length>0){	//vod 추가, 수정
+					$('#id_uploadcontentbtn').hide();	//동영상 업로드 숨김
+				}
+				// if(url.search.indexOf('?update=')>-1){
+				// 	if($('#maincontent').next().text().substring(0,3) == '1주차' || $('#maincontent').next().text().substring(0,3) == '2주차' || $('#maincontent').next().text().substring(0,3) == '3주차' || $('#maincontent').next().text().substring(0,3) == '4주차'){	//section 1, 2, 3, 4
+				// 		if($('.iconlarge').attr('src').indexOf('assign') > 0){	//과제모듈
+				// 			// 시작,종료일시 숨기고 문구출력
+				// 			$('#fitem_id_allowsubmissionsfromdate').css("visibility","hidden").css("height","0px").css("marginBottom","0px").css("display","flex");
+				// 			$('#fitem_id_duedate').css("visibility","hidden").css("height","0px").css("marginBottom","0px").css("display","flex");
+				// 			$('#fitem_id_duedate').before('<div style="color:red; margin-left:12%;">1, 2주차는 시작일시와 종료일시가 주차명 기간과 동일하게 운영되어 변경이 불가능합니다.<br>1주차 : 3월23일 - 4월26일<br>2주차 : 3월30일 - 4월26일<br>3주차 : 4월6일 - 5월10일<br>4주차 : 4월13일 - 5월10일</div>');
+				// 		}
+				// 		if($('.iconlarge').attr('src').indexOf('quiz') > 0){	//퀴즈모듈
+				// 			// 시작,종료일시 숨기고 문구출력
+				// 			$('#fitem_id_timeopen').css("visibility","hidden").css("height","0px").css("marginBottom","0px").css("display","flex");
+				// 			$('#fitem_id_timeclose').css("visibility","hidden").css("height","0px").css("marginBottom","0px").css("display","flex");
+				// 			$('#fitem_id_timeclose').before('<div style="color:red; margin-left:12%;">1, 2주차는 시작일시와 종료일시가 주차명 기간과 동일하게 운영되어 변경이 불가능합니다.<br>1주차 : 3월23일 - 4월26일<br>2주차 : 3월30일 - 4월26일<br>3주차 : 4월6일 - 5월10일<br>4주차 : 4월13일 - 5월10일</div>');
+				// 		}
+				// 	}
+				// }
+			break;
+			case '/course/editsection.php':
+				if($('#page-course-editsection').length>0){
+					if($('#id_usedefaultname').next().text().indexOf('[주 1]')>0 || $('#id_usedefaultname').next().text().indexOf('[주 2]')>0){	//1주차,2주차 섹션만 적용
+						$('#id_name').attr('disabled','disabled');
+						$('#id_usedefaultname').attr('disabled','disabled');
+					}
+				}
+			break;			
+		}
+	}
+
+	// *****************************************************************************
+	// 가톨릭관동대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'tlms.cku.ac.kr'){
+		switch (url.pathname){
+			// case '/local/ubion/setting/course.php':	// 강의실>기타관리>강좌설정
+			// 	$('#course_offlineattendance').parent().parent().hide();	// 이수/진도 설정>오프라인출석부 - 숨김
+			// break;
+			case '/mod/forum/view.php':
+				if($('#page-mod-forum-discuss').length > 0){
+					// 토론글 내려받기(excel) 매핑
+					var forumurl = url.search.split("=");
+					forumurl = '/mod/forum/forum_export.php?cmid='+forumurl[1]
+					$('.autosubmit').after('<a id="foruminfo" href="'+forumurl+'" class="btn btn-info" style="float:right">토론글 내려받기(excel)</a>');
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 루터대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.ltu.ac.kr'){
+		if($('#page-site-index').length>0){
+			// 소규모 대학 플랫폼 글자간격 조정
+			$('.left-menu-link-online h5').css('padding-top','5%')
+			$('.left-menu-link-online h5').css('line-height','150%')
+		}
+		switch (url.pathname){
+			case '/mod/assign/view.php':	// 강의실>과제
+				if($('#page-mod-assign-view').length > 0){
+					$('.gradingsummary .submissionlinks .btn-assgin-status-list').hide();
+				}
+			break;
+			case '/course/modedit.php':
+				if($('#page-mod-vod-mod').length > 0){
+					$('#fgroup_id_contentselector').after('<div class="fitem fitem_fgroup"><div class="fitemtitle"></div><div class="felement fgroup" style="color: red; font-weight: bold;">※ 학습기간 도중, 동영상 변경 시, 진도 기록이 모두 초기화 되므로 주의해 주시기 바랍니다.</div></div>');
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 동남보건대
+	// *****************************************************************************
+	if(url.hostname == 'lms.dongnam.ac.kr'){
+	
+		switch (url.pathname){
+			case '/mod/feedback/show_entries.php':	//설문조사>응답보기-이름, 영문명 숨김 
+				$('#region-main div.firstinitial').hide();
+				$('#region-main div.lastinitial').hide();
+				$("#region-main input.form-control").focus();				
+			break;
+
+		}
+	}
+
+	// *****************************************************************************
+	// 창원대
+	// *****************************************************************************
+	if(url.hostname == 'ecampus.changwon.ac.kr'){
+
+		// footer 전화번호 수정 (수정자: ellena)
+		$('#page-footer .address .tell').text('TEL : 055-213-2230');
+
+		switch (url.pathname){
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+						if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+							return false;
+						}
+					}
+					document.onkeydown = CtrlAlt;
+	
+					//복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+		}
+
+	}
+
+	// *****************************************************************************
+	// 거점국립대학(케리스)
+	// *****************************************************************************
+	if(url.hostname == 'keris.moodler.kr'){
+		switch (url.pathname){
+			case '/course/modedit.php':	// 강의실>모듈 추가 및 수정
+				if(url.search.indexOf('?add=forum')>-1){	//포럼모듈
+					$('#id_discussionlocking').hide();	//discussionlocking 숨김
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 차의과대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.cha.ac.kr'){
+		switch (url.pathname){
+			case '/mod/chat/view.php':	// 강의실>채팅
+				$('#enterlink').children().eq(1).hide();	//'더 접근성 있는 인터페이스 사용' 숨김
+			break;
+
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지
+					$(document).on('contextmenu', function() {
+						alert('현재페이지에서 우클릭은 사용하실 수 없습니다.');
+						return false;
+					});
+					
+					//복붙 이벤트 방지
+					$('#page-mod-quiz-attempt').attr('oncopy','return false');
+					$('#page-mod-quiz-attempt').attr('oncut','return false');
+					$('#page-mod-quiz-attempt').attr('onpaste','return false');
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 케리스_거점국립대학(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.knu9.or.kr'){
+
+		if($('#page-site-index').length>0){	//메인화면
+			$('.close_notice').each(function(i){ if($(this).children().val() != 1){$(this).remove();}})	//팝업창의 3,7일동안 다시보기 없앰
+			$('.modal-footer').find('br').remove();	//여백조정
+		}
+		switch (url.pathname){
+			case '/course/modedit.php':	// 강의실
+				if($('#page-mod-quiz-mod').length>0){
+					$('#id_security').attr('style','diplay:unset;')
+					// // 퀴즈 기간 설정 활성화
+					// $("input:checkbox[id='id_timeopen_enabled']").trigger("click");
+					// $("input:checkbox[id='id_timeclose_enabled']").trigger("click");
+				}
+				if($('#page-mod-assign-mod').length > 0 || $('#page-mod-quiz-mod').length > 0 || $('#page-mod-forum-mod').length > 0){
+					$('#id_modstandardgrade').removeClass('collapsed');
+					$('#id_submitbutton').click(function(){
+						if($('#id_gradecat option:selected').text() == '범주 없음'){ 
+							alert('"성적 > 카테고리 선택"에서 성적 카테고리를 반드시 선택해주세요. 카테고리가 없으면 "성적부 > 성적항목 관리"에서 카테고리를 먼저 생성 후 이용하세요.');
+							return false;
+						} else if($('#id_gradecat option:selected').text() == 'Uncategorised'){ 
+							alert("Please select a category and register it. If you don't have a category, create a category first in the grade report and use it.");
+							return false;
+						}						
+					});
+				}
+			break;
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+                        if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+                            return false;
+                        }
+					}
+					document.onkeydown = CtrlAlt;
+
+					//복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+			case '/grade/edit/tree/item.php' :
+				if($('#page-grade-edit-tree-item').length > 0){
+					$('#id_submitbutton').click(function(){
+						if($('#id_parentcategory option:selected').text() == '범주 없음'){ 
+							alert('"성적 > 카테고리 선택"에서 성적 카테고리를 반드시 선택해주세요. 카테고리가 없으면 "성적부 > 성적항목 관리"에서 카테고리를 먼저 생성 후 이용하세요.'); 
+							return false;
+						}
+					});
+				}
+			break;
+		
+
+		}
+	}
+
+	// *****************************************************************************
+	// 전북대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'jbec.jbnu.ac.kr'){
+		switch (url.pathname){
+			case '/course/view.php':	// 강의실
+				if(url.search.indexOf('&notifyeditingon=')>-1){	//편집모드
+					//$('#chooseform .options .alloptions .option').eq(11).hide();
+				}
+			break;
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-grading').length > 0){
+					setTimeout(function(){ $('.addedAnnotatedData').next().hide(); }, 265);	// 첨부파일 수 숨김
+				}else if($('#page-mod-assign-grader').length > 0){
+					setTimeout(function(){ $('.ygtvcontent').children().children().eq(2).hide(); }, 3500);	// 첨부파일 수 숨김
+				}else if($('#page-mod-assign-view').length > 0){
+					setTimeout(function(){ $('.lastrow').next().remove(); }, 400);	// 첨부파일 수 숨김
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 전북대(운영2)
+	// *****************************************************************************
+	if(url.hostname == 'ieilms.jbnu.ac.kr'){
+		switch (url.pathname){
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-grading').length > 0){
+					setTimeout(function(){ $('.addedAnnotatedData').next().hide(); }, 800);	// 첨부파일 수 숨김
+				}
+				if($('#page-mod-assign-grader').length > 0){
+					setTimeout(function(){ $('.ygtvcontent').children().children().eq(2).hide(); }, 3500);	// 첨부파일 수 숨김
+				} 
+				if($('#page-mod-assign-view').length > 0){
+					setTimeout(function(){ $('.lastrow').next().remove(); }, 400);	// 첨부파일 수 숨김
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 전북대(운영3)
+	// *****************************************************************************
+	if(url.hostname == 'ieilmsold.jbnu.ac.kr'){
+		switch (url.pathname){
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+                        if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+                            return false;
+                        }
+					}
+					document.onkeydown = CtrlAlt;
+
+					//복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 인천재능대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.jeiu.ac.kr'){
+		switch (url.pathname){
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+                        if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+                            return false;
+                        }
+					}
+					document.onkeydown = CtrlAlt;
+
+					//복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 덕성여대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.duksung.ac.kr'){
+		switch (url.pathname){
+			case '/course/modedit.php':
+                if($('#page-mod-quiz-mod').length > 0){
+                    $('#id_interactionhdr').hide(); //퀴즈 - 실시방식 숨김
+				}
+				// $('#fgroup_id_closedoptionsgrp fieldset > span').eq(3).remove(); //구체적인피드백 삭제
+			break;
+
+			case '/local/ubion/mod/assign/best.php': 
+				$(".local_ubion_mod_assign .well > form").before("<div>'우수 과제'로 선정한 과제물은 모든 학생들에게 공유됩니다.<br>(과제 공유 목적으로 활용하실 수 있습니다.)</div><br>"); //우수 과제 선정 - 문구추가
+			break;
+
+			case '/mod/assign/view.php': // 과제 - '직접 작성' 안내문구 추가
+				setTimeout(function(){
+					$("#fitem_id_onlinetext_editor div.feditor div.editor_atto_wrap").before("<div style='color:#d9534f; font-weight:bold;'>(입력란에 직접 작성하여주십시오. '직접 작성' 입력란에는 파일첨부가 불가합니다.)</div>");
+				}, 1000);			
+			break;
+
+			case '/mod/quiz/review.php' :
+				// 퀴즈 피드백 보기 화면
+				if($('#page-mod-quiz-review').length>0){
+					//우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					//복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-review').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+			case '/mod/quiz/attempt.php':
+				// 퀴즈 응시 화면
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+                        if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+                            return false;
+                        }
+					}
+					document.onkeydown = CtrlAlt;
+
+					//복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+		}
+	}
+	
+	// *****************************************************************************
+	// 동양미래대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'eclass.dongyang.ac.kr'){
+		switch (url.pathname){
+			case '/mod/assign/view.php':
+				$("#region-main .gradingsummary .submissionlinks button.btn-assgin-status-list").text("과제 제출 상태");
+				if($('#page-mod-assign-grading').length > 0){
+					$('#mod_assign_grading_r4_c9').css('max-width','300px');
+				}				
+			break;			
+
+			case '/grade/export/xls/index.php':
+				//성적부 > 내보내기 > '성적 항목 선택' 모두체크 (수정자:ellena)
+				$('#id_gradeitems input').each(function() {
+					$(this).attr('checked', true);
+				});
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 전주교육대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.jnue.kr'){
+		switch (url.pathname){
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-view').length > 0){
+					$('#region-main .submissionlinks .btn-assgin-status-list').css('display','none');
+				}				
+			break;			
+		}
+	}
+
+	// *****************************************************************************
+	// 군산간호대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.kcn.ac.kr'){
+		switch (url.pathname){
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-view').length > 0){
+					$('#region-main .submissionlinks .btn-assgin-status-list').css('display','none');
+				}				
+			break;			
+		}
+	}
+
+	// *****************************************************************************
+	// KC대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'eclass.kcu.ac.kr'){
+		switch (url.pathname){
+
+		}
+	}
+
+	// *****************************************************************************
+	// 한림대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'smartlead.hallym.ac.kr'){
+		switch (url.pathname){
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length > 0){
+					// 우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+                        if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+                            return false;
+                        }
+					}
+					document.onkeydown = CtrlAlt;
+
+					// 복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+            break;
+		}
+	}
+
+	// *****************************************************************************
+	// 추계예술대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.chugye.ac.kr'){
+		switch (url.pathname){
+			case '/local/ubion/user/first.php':
+				// 개인정보처리방침 oo대학교 > 추계예술대학교로 명칭 변경
+				var modifyText = $("#page-content-wrap .sPrivacy").text();
+				modifyText = modifyText.replace("OO대학교", "추계예술대학교");		
+				$("#page-content-wrap .sPrivacy").html(modifyText);
+
+				var tex1 = "추계예술대학교는 개인정보보호법 등 관련 법령상의 개인정보 보호 규정을 준수하여 학습자의 개인정보 보호에 최선을 다하고 있습니다."
+				var tex2 = "추계예술대학교는 개인정보보호법 제15조 및 같은 법 제22조에 근거하여, 다음과 같이 교육홍보 및 학습자 관리를 위하여 개인정보를 수집 이용하는 것에 대한 동의를 받고자 합니다."
+				$("#page-content-wrap .privacy_intro").html("<div>" + tex1 + "<br/>" + tex2 + "</div>");
+
+				$("#page-content-wrap .privacy_item").eq(0).text('1. 개인정보의 수집 이용 목적 : 추계예술대학교 학습관리시스템 운영 및 관리');
+				$("#page-content-wrap .privacy_item_detail").text('본인은 위와 같이 개인정보를 수집 이용하는 것에 대한 동의를 거부할 권리가 있습니다. 그러나 동의를 거부할 경우 추계예술대학교에서 제공하는 학습관리시스템을 이용할 수 없음을 참고하시기 바랍니다');
+			break;
+		}
+	}
+	// *****************************************************************************
+	// 숭의여자대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.sewc.ac.kr'){
+		switch (url.pathname){
+			case '/backup/import.php':
+				// 가져오기 안내문구 추가
+				var pageEach = $('#page-backup-import').length;			
+				if(pageEach == 1){
+					var mainText = $('.ftoggler').text();
+					if(mainText == '포함:'){
+						$('#id_coursesettings .fcontainer').before('<div style="text-align:center;color:red;padding:20px;background-color:#f9f0ef;border:2px solid #d2afad;">필요한 콘텐츠만 선택하여 주시기 바랍니다. <br/> 전체 복사후 중복된 콘텐츠를 잘못 삭제할 경우 학습자의 학습이력이 삭제될 수 있습니다.</div><br/>');
+					}
+					if(mainText == '백업 설정포함된 항목들:'){
+						$('#fgroup_id_buttonar .felement').before('<div style="color:red;text-align:right">필요한 콘텐츠만 선택되었는지 확인해주시기 바랍니다.<br/> 전체 복사후 중복된 콘텐츠를 잘못 삭제할 경우 학습자의 학습이력이 삭제될 수 있습니다. </div>');
+					}
+				}			
+			break;			
+		}
+	}
+
+	// *****************************************************************************
+	// 홍익대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'cn2.hongik.ac.kr'){
+
+		// 강좌 전체보기 - MOOC 숨김 처리
+		$("#region-main ul.dropdown-mycourse-type li").eq(2).hide()
+
+		// 강좌 전체보기 - 비교과 강좌 숨김 처리
+		$("#region-main ul.dropdown-mycourse-type li").eq(3).hide()
+
+		switch (url.pathname){
+			// 온라인출석부 > 사이버강의 출석부 설정
+			case '/local/ubattendance/online_attendance_setting.php':
+				$("#region-main .online_attendance_range_text").text("시청인정기준은 최대 99%까지만 입력 가능합니다.");
+			break;
+			
+			case '/report/ubcompletion/progress.php':
+				// 사이버강의 출석부 - 문구 추가
+				$("#region-main .buttons").after("<div style='color:#FF4829;'>*사이버강좌는 시청기록이 출석부와 연동되며 시청완료는 출석, 미 시청은 결석, 기간 외 시청은 지각으로 처리됩니다.</div>");
+				
+				// 사이버강의 출석부 > 시청 현황 - 문구 추가
+				var text1 = "* 사이버강좌의 VOD/이러닝 시청기록은 출석부와 연동됩니다."
+				var text2 = "* 일반강좌의 VOD/이러닝 시청기록은 e-출석부와 연동되지 않습니다. VOD/이러닝 시청기록을 참고하시어 클래스넷 [e-출석부]에 출결을 입력하여 주시기 바랍니다."
+				$("#region-main .tab-display").after("<div style='color:#FF4829;'>" + text1 + "<br/>" + text2 + "</div><br/>");
+			break;
+
+			case '/report/ubstatistics/index.php':
+				// 학습관리 > 학습이력현황 - 문구 추가
+				var tex1 = "* 사이버강좌의 VOD/이러닝 시청기록은 출석부와 연동됩니다."
+				var tex2 = "* 일반강좌의 VOD/이러닝 시청기록은 e-출석부와 연동되지 않습니다. VOD/이러닝 시청기록을 참고하시어 클래스넷 [e-출석부]에 출결을 입력하여 주시기 바랍니다."
+				$("#region-main .report_statistics").before("<div style='color:#FF4829;'>" + tex1 + "<br/>" + tex2 + "</div><br/>");
+			break;
+
+			case '/grade/import/csv/index.php':
+				$('.tabs-main').after("<div style='color:red;'>(1) 엑셀 문서에 학번과 성적항목을 입력하고, 성적을 입력합니다.<br/>* 성적 가져오기 시, 하생 데이터와 성적을 매칭해야 하기 때문에 학번을 꼭 입력합니다.<br/>(2) '다른 이름으로 저장'을 클릭한 후, 파일 형식을 'CSV(쉼표로 분리)'로 저장합니다.<br/>(3) 성적부 > 가져오기 > 엑셀(.CSV) 에서 저장한 CSV파일을 업로드한 후, [성적등록] 버튼을 클릭합니다.<br/>(4) '미리보기'에서 입력한 점수가 맞게 적용되었는지 확인합니다.<br/>(5) '사용자 확인' 의 '학번' 필드 선택에 '학번' 을 선택합니다.<br/>(6) '성적 항목 확인'에서 가져올 성적항목을 선택한 후 [성적 등록] 버튼을 클릭합니다.</div>");
+			break;
+
+			case '/user/view.php':
+				// 학습자 개인정보 숨김 처리
+				var removeElement = true;
+				$('#region-main .profile_tree .node_category h3').each(function(idx,val){
+    				var text = $(this).text();
+    				if(text == "보고서"){
+        				removeElement = false;
+    				}
+				})
+
+				if(removeElement){
+    				$('#region-main .profile_tree').hide();
+				}			
+			break;
+
+			case '/backup/backup.php':
+				if($('#page-backup-backup').length > 0) {
+					// 백업 설정 - 옵션 숨김 처리
+					setTimeout(function(){
+
+						$('#fitem_id_setting_root_imscc11').css('display','none');
+						$('#fitem_id_setting_root_users').css('display','none');
+						$('#fitem_id_setting_root_anonymize').css('display','none');
+						$('#fitem_id_setting_root_role_assignments').css('display','none');
+
+					}, 500);
+
+					//백업 설정 - 안내문구 추가
+					$('#id_rootsettings .clearfix').before("<div style='text-align:center;color:red;padding:20px;background-color:#f9f0ef;border:2px solid #d2afad;'>사용자 정보(수강학생 명단 등) 및 학습기록(학생이 제출한 과제, 게시판 내 게시글 등)은 백업할 수 없습니다.<div>");
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 인하대(운영)
+	// *****************************************************************************
+	
+	if(url.hostname == 'learn.inha.ac.kr'){
+		switch (url.pathname){			
+			case '/course/modedit.php' :
+				if($('#page-mod-assign-mod').length > 0 || $('#page-mod-quiz-mod').length > 0 || $('#page-mod-forum-mod').length > 0){
+					$('#id_modstandardgrade').removeClass('collapsed');
+					$('#id_submitbutton').click(function(){
+						if($('#id_gradecat option:selected').text() == '범주 없음'){ 
+							alert('"성적 > 카테고리 선택"에서 성적 카테고리를 반드시 선택해주세요. 카테고리가 없으면 "성적부 > 성적항목 관리"에서 카테고리를 먼저 생성 후 이용하세요.');
+							return false;
+						} else if($('#id_gradecat option:selected').text() == 'Uncategorised'){ 
+							alert("Please select a category and register it. If you don't have a category, create a category first in the grade report and use it.");
+							return false;
+						}						
+					});
+				}
+
+				// 퀴즈 서식 > 순서대로 이동 숨김(수정자: ellena)
+				$('#id_navmethod option[value=sequential]').hide();
+			break;
+
+			case '/mod/assign/view.php': 
+				if($('#page-mod-assign-view').length > 0){
+					//과제 - [과제 제출 상태] 버튼 숨김
+					$("#region-main .gradingsummary .submissionlinks .btn-assgin-status-list").css("display", "none"); 
+				}
+			break;			
+
+			case '/grade/edit/tree/item.php' :
+				if($('#page-grade-edit-tree-item').length > 0){
+					$('#id_submitbutton').click(function(){
+						if($('#id_parentcategory option:selected').text() == '범주 없음'){ 
+							alert('"성적 > 카테고리 선택"에서 성적 카테고리를 반드시 선택해주세요. 카테고리가 없으면 "성적부 > 성적항목 관리"에서 카테고리를 먼저 생성 후 이용하세요.'); 
+							return false;
+						}
+					});
+				}
+			break;
+
+			case '/group/index.php' :
+				if($('#page-group-index').length > 0) {
+					//팀 가져오기 버튼 숨김처리
+					$("#page-content-wrap #region-main #groupeditform .boxaligncenter .groups #showimportgroups").hide();
+				}
+			break;
+
+			case '/question/question.php':
+				if($('#page-question-type-multichoiceset').length > 0){
+					//다수시도
+					$('#id_multitriesheader .femptylabel').hide();
+					$('#id_multitriesheader .fitem_feditor').hide();
+					$('#id_multitriesheader .fitem_fgroup').hide();
+					$('#id_addhint').hide();
+				}
+			break;
+
+			case '/mod/ubboard/view.php':
+				// Q&A - 문구 추가
+				var pageEach = $('#page-mod-ubboard-view').length;
+				
+				if(pageEach != 1){
+					var mainText = $('.main').text();
+					// console.log(mainText)
+					if(mainText == 'Q&A'){
+						$('#region-main .ubboard_container').before('<div style="color:red">해당게시판은 I-Class 시스템 자체에 대한 질의응답입니다.<br/>I-Class 시스템에 대한 문의사항만 업로드해주시면 감사하겠습니다.(수업에 대한 문의사항은 강좌Q&A를 적극 활용해주시기 바랍니다.)</div>');
+					}
+				}
+			break;
+
+            case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					// 우클릭 이벤트 방지 (수정자: ellena)
+					$(document).on('contextmenu', function() {
+						return false;
+					});
+					
+					// control 키 방지 (수정자: ellena)
+					function CtrlAlt() {
+                        if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+                            return false;
+                        }
+					}
+					document.onkeydown = CtrlAlt;
+
+					// 복붙 이벤트 방지 (수정자: ellena)
+					$('#page-mod-quiz-attempt').on("cut copy paste",function(e) {
+						e.preventDefault();
+					});
+				}
+			break;
+			
+			case '/local/ubassistant/':
+				if($('#page-my-courses').length>0){
+					// 조교/청강생 신청 문구 추가 (수정자:ellena)
+					$('#region-main .assistant').before('<div style="color:red">조교 및 청강생 신청은 사전에 강의담당교원과 협의를 하여 신청해주시기 바랍니다.</div>');
+				}
+			break;
+			
+			/**
+			case '/mod/ubboard/write.php':
+				if($('#page-mod-ubboard-view').length>0){
+					$('#allmailsend').prop('disabled', true);
+					$('#allmailsend').parent().after('<div style="display:inline; color:red;">&nbsp; &nbsp; 메일발송 서비스 점검중입니다. 점검 이후 해당 기능은 활성화될겁니다</div>')
+				}
+			break;
+			case '/mod/ubboard/modify.php':
+				if($('#page-mod-ubboard-view').length>0){
+					$('#allmailsend').prop('disabled', true);
+					$('#allmailsend').parent().after('<div style="display:inline; color:red;">&nbsp; &nbsp; 메일발송 서비스 점검중입니다. 점검 이후 해당 기능은 활성화될겁니다</div>')
+				}
+			break;
+			**/
+		}
+	}
+
+
+	// *****************************************************************************
+	// 전남대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'sel.jnu.ac.kr'){
+
+		switch (url.pathname){
+			case '/course/modedit.php':	// 강의실>모듈 추가 및 수정
+				if($('#page-mod-vod-mod').length > 0){
+					$('#fitem_id_progress').hide();	//진도관리의 진도체크 숨김
+				}
+				if($('#page-mod-ubchat-mod').length > 0){
+					$('#fitem_id_logs').hide();	//종료된 대화내용 공개 숨김
+				}
+
+				if(url.search.indexOf('?add=')>-1 || url.search.indexOf('?update=')>-1){	//모든 모듈 수정,추가 시
+					$('#id_competenciessection').hide();	//역량 숨김
+				}
+				if($('#page-mod-forum-mod').length > 0){	//토론방(forum))모듈
+					$('#id_discussionlocking').hide();	//discussionlocking 숨김
+					$('#fitem_id_type option[value=eachuser]').hide();
+					$('#fitem_id_type option[value=blog]').hide();
+					$('#fitem_id_type option[value=qanda]').hide();
+				}
+				if($('#page-mod-url-mod').length > 0){	//url링크 모듈
+					$('#id_externalurl').next().hide();	//외부링크가져오기 버튼 숨김
+				}
+				if($('#page-mod-vod-mod').length>0){	//vod 모듈
+					$('#fitem_id_restricted').hide();
+				}
+				
+			break;
+
+			case '/mod/forum/discuss.php':
+				$('.commands :nth-child(1)').hide();
+				$('input[value="Pin"]').hide();
+			break;
+
+			case '/mod/chat/view.php':
+				$('#enterlink').children().eq(1).hide();
+			break;
+
+			case '/report/outline/user.php':
+				$('#toggle-contact-button').hide();
+			break;
+
+			case '/user/view.php':
+				if($('#page-course-view-ubsweeks').length > 0){
+					$('#toggle-contact-button').hide();	//내연락처에추가 숨김
+					$('.node_category').eq(2).hide();	//기타 숨김
+					$('.node_category').eq(3).hide();	//보고서 숨김
+				}
+			break;
+
+			case '/mod/forum/post.php':
+				if($('#page-mod-forum-post').length>0){
+					$('#fitem_id_pinned').hide();
+				}
+			break;
+
+			case '/mod/feedback/complete.php':
+				if($('#page-mod-feedback-complete').length > 0){
+					// 설문 참여 시 텍스트박스랑 라디오박스에서 Enter 키 이벤트 방지
+					$('input[type="radio"]').keydown(function() {
+						if (event.keyCode === 13) {
+						  event.preventDefault();
+						};
+					  });					  
+					  $('input[type="text"]').keydown(function() {
+						if (event.keyCode === 13) {
+						  event.preventDefault();
+						};
+					  });
+				}
+			break;
+
+			case '/mod/assign/view.php':
+				if($('#page-mod-assign-grading').length>0){	//과제채점
+					$("document").ready(function(){
+						var hidebtn = function() {
+							if ($('.ygtvrow').length == 0) {
+								setTimeout(hidebtn,100);
+								return;
+							}
+							$('.ygtvrow').each(function(){ $(this).children().eq(2).hide(); });
+						}
+						hidebtn();
+					});
+				}
+				if($('#page-mod-assign-viewpluginassignsubmission').length>0){	// 과제>직접작성 확인 화면
+					$('#intro').after('<hr style="border: thin solid darkgray;">');
+				}
+			break;
+
+			case '/question/question.php':
+				//문제-문제추가
+				if($('#page-question-type-essay').length>0){
+					//	답안형식 옵션 숨김
+					$('#id_responseformat option[value=editorfilepicker]').hide();
+					$('#id_responseformat option[value=plain]').hide();
+					$('#id_responseformat option[value=monospaced]').hide();
+					$('#id_responseformat option[value=noinline]').hide();
+					
+					setTimeout(function(){ $('#fitem_id_attachmentsrequired').hide(); }, 1500);	// 첨부파일 수 숨김
+				}
+			break;
+
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length>0){
+					//우클릭 이벤트 방지
+					$(document).on('contextmenu', function() {
+						alert('현재페이지에서 우클릭은 사용하실 수 없습니다.');
+						return false;
+					});
+					
+					//복붙 이벤트 방지
+					$('#page-mod-quiz-attempt').attr('oncopy','return false');
+					$('#page-mod-quiz-attempt').attr('oncut','return false');
+					$('#page-mod-quiz-attempt').attr('onpaste','return false');
+				}
+			break;
+
+			case '/local/ubion/user/mycourse_setting.php':
+				// 내 강좌 순서 변경 - 표시여부 숨김 처리
+				$("#region-main .user-sortorder table th").eq(3).hide();
+				$('#region-main .my-course-lists tr td .btn-course-view').parent().hide();
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 광주보건대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.ghu.ac.kr'){
+		switch (url.pathname){
+			case '/course/modedit.php': 
+				if(url.search.indexOf('?add=assign')>-1){
+					//(수정자: ellena)
+					// 시작일시 시간 00:00
+					$('#id_allowsubmissionsfromdate_hour').val('0').prop("selected", true);
+					$('#id_allowsubmissionsfromdate_minute').val('1').prop("selected", true);
+
+					// 종료일시 시간 23:59
+					$('#id_duedate_hour').val('23').prop("selected", true);
+					$('#id_duedate_minute').val('59').prop("selected", true);
+
+					// 제출차단 시간 23:59
+					$('#id_cutoffdate_hour').val('23').prop("selected", true);
+					$('#id_cutoffdate_minute').val('59').prop("selected", true);
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 광주보건대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms-new.ghu.ac.kr'){
+		$(".topmenu").children('li').each(function(idx, val){
+			var menutext = $(this).find('a').html();
+			menutext = menutext.replace(' <span class="caret"></span>', "");
+			if(menutext == '수강생 알림' || menutext == 'Students Notifications'){
+				$(this).find('li').eq(1).css('display','none');
+			}
+		})
+
+		switch (url.pathname){
+			case '/user/users.php': //사진동기화 버튼 숨김
+				$("#region-main div.userlist .float-right").hide();
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 대구보건대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'nlms.dhc.ac.kr'){
+		switch (url.pathname){
+			case '/course/edit.php': // 강좌 편집
+				if($('#page-course-edit').length > 0){
+					// 일반설정
+					$('#fitem_id_fullname').after('<div class="fitem required fitem_ftext"><div class="fitemtitle"><label>강좌 공식명칭</label></div><div class="felement ftext"><input type="text" value="'+$('#id_fullname').val()+'" disabled="disabled"/></div></div>');
+					$('#fitem_id_fullname').hide();
+					$('#fitem_id_shortname').after('<div class="fitem required fitem_ftext"><div class="fitemtitle"><label>강좌명 약어(영문)</label></div><div class="felement ftext"><input type="text" value="'+$('#id_shortname').val()+'" disabled="disabled"/></div></div>');
+					$('#fitem_id_shortname').hide();
+				}
+			break;
+		}
+	}
+
+	// *****************************************************************************
+	// 서울여자간호대(운영)
+	// *****************************************************************************
+	if(url.hostname == 'lms.snjc.ac.kr'){		
+		switch (url.pathname){
+			case '/mod/quiz/attempt.php':
+				if($('#page-mod-quiz-attempt').length > 0){
+					$('.formulation p span .form-control').each(function (index, item){
+						var formLength = parseInt($('.formulation p span .form-control').eq(index).attr('size'));
+						$('.formulation p span .form-control').eq(index).attr('size',formLength + 10);
+					})
+				}
+			break;
+			case '/question/preview.php':
+				if($('#page-question-preview').length > 0){
+					$('.formulation p span .form-control').each(function (index, item){
+						var formLength = parseInt($('.formulation p span .form-control').eq(index).attr('size'));
+						$('.formulation p span .form-control').eq(index).attr('size',formLength + 10);
+					})
+				}
+			break;
+			case '/mod/feedback/view.php':
+				$('#page-mod-feedback-view #region-main h2 a').remove()
+				$('#page-mod-feedback-view #region-main .box a').before('<br>');
+				$('#page-mod-feedback-view #region-main .box a').addClass('btn btn-primary');
+				$('#page-mod-feedback-view #region-main .box a').css('font-weight', 'bold');
+				$('#page-mod-feedback-view #region-main .box a').css('font-size', '13px');
+				$('#page-mod-feedback-view #region-main .box a').closest('.box').css('text-align','center');
+			break;
+			case '/question/question.php':
+				if($('#page-question-type-multichoice').length > 0){
+					$('#fgroup_id_hintoptions_0').hide();
+				}
+
+				if($('#page-question-type-multichoiceset').length > 0){
+					$('#id_multitriesheader .femptylabel').hide();
+					$('#id_multitriesheader .fitem_feditor').hide();
+					$('#id_multitriesheader .fitem_fgroup').hide();
+					$('#id_addhint').hide();
+				}
+			break;
+		}
+	}
+
+});
+
+$("document").ready(function(){
+
+	var url = document.location;
+	var isSimpleMode = true;
+	var isModuleUrlView = true; // moduel url
+
+	var filter = "win16|win32|win64|mac|macintel";
+	var isMobile = false;
+
+	if ( navigator.platform ) {
+		if ( filter.indexOf( navigator.platform.toLowerCase() ) < 0 ) {
+			isMobile = true;
+		}
+	}
+	if(url.hostname == 'kornulms.moodler.kr' || url.hostname == 'ncyber.kornu.ac.kr' || url.hostname == 'ud.kornu.ac.kr'){	//나사렛대
+		if(url.pathname == '/mod/vod/view.php'){	//모바일동영상보기
+			$('.buttons').css('margin-top','10px');
+			$('.buttons').css('margin-bottom','15px');
+			$('.buttons').eq(1).after('<div><b>학습시작일 이전에 재생한 기록은 출석으로 인정되지 않습니다.</b></div>');
+		}
+		//BOOST테마일때만
+		if($('.boost').length == 1){
+			console.log("CURRENT THEME BOOST");
+
+			/* 로그아웃 버튼 이동 */
+			var logoutLink = $("#page-footer .logininfo a:eq( 1 )").attr('href');
+			var logoutBox = "<div class='btn btn-default' style='float:right;margin-top:4px;'><a href='" + logoutLink + "'>로그아웃</a> </div>";
+			logoutBox = $.parseHTML(logoutBox);
+			$(".navbar-brand").after(logoutBox);
+
+			//메인페이지(index)
+			if($('.page-header-headings h1').text() == '나사렛대학교 학습관리시스템(nCyber)'){
+				$('#page-header h1').text('강좌목록').css('font-size','28px');	//$('#page-header').hide();	//제목 숨김
+				//강좌추가정보 숨김
+				$('#page-content .course-image').hide();
+				$('#page-content .my-course-layout-default').hide();
+				$('#page-content .course-label').hide();
+				$('#page-content .prof').hide();
+				//더보기 버튼 밑으로 모두 숨김
+				$('#page-content .site_notices').hide();
+				$('#page-content .course-title h3').css('font-size','20px').css('margin-bottom','20px');
+				$("nav.list-group > a").eq(1).hide()
+				$("nav.list-group > a").eq(2).hide();
+				$("nav.list-group > div").hide();
+			} else {
+				//메인페이지가 아닐때 텍스트 변경
+				$('.site-name').text('메인화면으로 이동');
+				$('#page-navbar').hide();
+			}
+			/****모든페이지에 적용********/
+			
+			//footer 숨김
+			$('#page-footer').hide();
+
+			//메인, 대시보드, 달력, 파일관리 숨김
+			$('.list-group-item .m-l-1').closest('a').hide();
+			$("nav.list-group").eq(1).hide();
+			$("a",$("nav.list-group").eq(0)).eq(1).hide();
+			$("a",$("nav.list-group").eq(0)).eq(2).hide();
+			$("a span.media-body",$("nav.list-group").eq(0)).each(function() { $(this).html($(this).html().split(" ").shift()); });			
+
+			if(url.pathname == '/mod/ubboard/write.php'){	//글쓰기
+				//깨지는 화면 정리
+				$('.ubboard_write .form-horizontal .well').children().next().children('.control-label').hide();
+				$('.checkbox').css('margin-top','10px')
+				$('.fm-loading').hide();
+			}
+			if(url.pathname == '/mod/forum/view.php'){
+				// 화면 정리
+				$('.forummode').hide();
+				$('.menubar').hide();
+			}
+			// nav-출석부 버튼
+			var start = $('.list-group').children().eq(0).attr('href').indexOf("=");
+			var clid = $('.list-group').children().eq(0).attr('href').substr(start+1);;
+			$('.list-group').children().eq(1).after('<a class="list-group-item list-group-item-action font-weight-bold" href="http://ncyber.kornu.ac.kr/report/ubcompletion/progress.php?id='+clid+'"><div class="m-1-0">출석현황</div></a>');
+		}
+	}
+
+
+
+});���5t�      _���_���B�q_���   Y    :https://s3.ap-northeast-2.amazonaws.com/code.coursemos.co.kr/flexiblepage_cm32.js?v=0.14 necko:classified 1 strongly-framed 1 security-info FnhllAKWRHGAlo+ESXykKAAAAAAAAAAAwAAAAAAAAEaphjojH6pBabDSgSnsfLHeAAAAAgAAAAAAAAAAAAAAAAAAAAEANQFmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAhtMIIIaTCCB1GgAwIBAgIQCRKD5qUQqDZIW51FZ4uxSTANBgkqhkiG9w0BAQsFADBkMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSMwIQYDVQQDExpEaWdpQ2VydCBCYWx0aW1vcmUgQ0EtMiBHMjAeFw0yMDA4MjcwMDAwMDBaFw0yMTA5MDExMjAwMDBaMHsxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMRkwFwYDVQQKExBBbWF6b24uY29tLCBJbmMuMSowKAYDVQQDDCEqLnMzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCcoI+ZECakTXKfQYNQfjZa5v8Epw5w7Aqc/TzMuq5dddUa9IE1+xTYmoTBvl7MX3xDMZY1WmofJlntN/pIxVLbxEzkkSk55l6xljHjxjzVl0k2ScWXGI/PQbFEdquhtMz0zhlPAp7nJ0sGh5giVDqK3QH7qtQuHk9rXPLBtyuxUwkiUE7Zh//VaXN0DpuUYYZ2R9LddsjnAHpONXbVloVWk4FRKiDAW7TwDL0NuDfv0O2DhWZx4p8IpaIvmQEY8BHk8lJEZzq5vXSayH8BYoAELc72Jh9BrjfWBYYBBav2YaYITTT4X3ErkyUuh0bmV1qP49m/29QvrtVCSSFRFWiBAgMBAAGjggT+MIIE+jAfBgNVHSMEGDAWgBTAErIodGhGZ+lwJXQaAEVbBn1cRDAdBgNVHQ4EFgQUAfSOKgT3nhmGPiofI7u4xVUXlSowggIlBgNVHREEggIcMIICGIIhKi5zMy5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgh9zMy5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgiEqLnMzLWFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CH3MzLWFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CKyouczMuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CKXMzLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tghIqLnMzLmFtYXpvbmF3cy5jb22CKSouczMtY29udHJvbC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgidzMy1jb250cm9sLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CMyouczMtY29udHJvbC5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIxczMtY29udHJvbC5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYItKi5zMy1hY2Nlc3Nwb2ludC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgjcqLnMzLWFjY2Vzc3BvaW50LmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcmwwOqA4oDaGNGh0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcmwwTAYDVR0gBEUwQzA3BglghkgBhv1sAQEwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzAIBgZngQwBAgIweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcnQwDAYDVR0TAQH/BAIwADCCAQMGCisGAQQB1nkCBAIEgfQEgfEA7wB1APZclC/RdzAiFFQYCDCUVo7jTRMZM7/fDC8gC8xO8WTjAAABdDJLN5kAAAQDAEYwRAIgSes4ydwp56+qnH40A9x6Mm+lbtbh1I5UeguBbTiv6zECIGD/VE7RucUeiduOX4MAcARqWShTefaQWN81p5+X+ZWbAHYAXNxDkv7mq0VEsV6a1FbmEDf71fpH3KFzlLJe5vbHDsoAAAF0Mks3mAAABAMARzBFAiAgoabMYxcUyemQXONiIqqTezIauVid/n6CGDF82MeJvAIhAM7AxpR+J5TVk2LKuShoT8mXbMVMUanQRMa3t/tWQNl5MA0GCSqGSIb3DQEBCwUAA4IBAQBc5vS1+rU2OXo/NgCOckutgMnXXqEVwwmXcBDqh8ILh3X07lRDTXUYDV7wLqq01XMIwtqiTkMoMcPhAFGU3Xvq4VdVpZfPv/+AHk0doPN3YAaytL22NITKNQsUdQtoaeDsNByylhBDChuBvRbs4hAxe6qnf3ztNj2dQufNUt7YmvWBo+gdbnjbtuy7v1ikR1BbxMcIn5gi/nqZVDoo1crEBC0DnUMfFsX2BMDNYvbYA4NDYVkO4JPISoD9eIfm7HysYuqMGWuP1g4uXWKz4vVvCFATaVPQi6clYGqND1M90POng3KLzGG8ACttwmuEJS0+dSMRKu1oFUkIZz1mn2juwC8AAwAAAAABAQAAAAAAAARQMjU2AAAAEFJTQS1QS0NTMS1TSEEyNTYAA2YKMiaRXE/7uyCJhaYy3wW9w5eaVCJM1YWJaWtuluqDAAAAAAAACG0wgghpMIIHUaADAgECAhAJEoPmpRCoNkhbnUVni7FJMA0GCSqGSIb3DQEBCwUAMGQxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xIzAhBgNVBAMTGkRpZ2lDZXJ0IEJhbHRpbW9yZSBDQS0yIEcyMB4XDTIwMDgyNzAwMDAwMFoXDTIxMDkwMTEyMDAwMFowezELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1NlYXR0bGUxGTAXBgNVBAoTEEFtYXpvbi5jb20sIEluYy4xKjAoBgNVBAMMISouczMuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJygj5kQJqRNcp9Bg1B+Nlrm/wSnDnDsCpz9PMy6rl111Rr0gTX7FNiahMG+XsxffEMxljVaah8mWe03+kjFUtvETOSRKTnmXrGWMePGPNWXSTZJxZcYj89BsUR2q6G0zPTOGU8CnucnSwaHmCJUOordAfuq1C4eT2tc8sG3K7FTCSJQTtmH/9Vpc3QOm5RhhnZH0t12yOcAek41dtWWhVaTgVEqIMBbtPAMvQ24N+/Q7YOFZnHinwiloi+ZARjwEeTyUkRnOrm9dJrIfwFigAQtzvYmH0GuN9YFhgEFq/ZhpghNNPhfcSuTJS6HRuZXWo/j2b/b1C+u1UJJIVEVaIECAwEAAaOCBP4wggT6MB8GA1UdIwQYMBaAFMASsih0aEZn6XAldBoARVsGfVxEMB0GA1UdDgQWBBQB9I4qBPeeGYY+Kh8ju7jFVReVKjCCAiUGA1UdEQSCAhwwggIYgiEqLnMzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CH3MzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CISouczMtYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIfczMtYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIrKi5zMy5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIpczMuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CEiouczMuYW1hem9uYXdzLmNvbYIpKi5zMy1jb250cm9sLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CJ3MzLWNvbnRyb2wuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIzKi5zMy1jb250cm9sLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgjFzMy1jb250cm9sLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgi0qLnMzLWFjY2Vzc3BvaW50LmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CNyouczMtYWNjZXNzcG9pbnQuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb20wDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjCBgQYDVR0fBHoweDA6oDigNoY0aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QmFsdGltb3JlQ0EtMkcyLmNybDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QmFsdGltb3JlQ0EtMkcyLmNybDBMBgNVHSAERTBDMDcGCWCGSAGG/WwBATAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdpY2VydC5jb20vQ1BTMAgGBmeBDAECAjB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2NhY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QmFsdGltb3JlQ0EtMkcyLmNydDAMBgNVHRMBAf8EAjAAMIIBAwYKKwYBBAHWeQIEAgSB9ASB8QDvAHUA9lyUL9F3MCIUVBgIMJRWjuNNExkzv98MLyALzE7xZOMAAAF0Mks3mQAABAMARjBEAiBJ6zjJ3Cnnr6qcfjQD3Hoyb6Vu1uHUjlR6C4FtOK/rMQIgYP9UTtG5xR6J245fgwBwBGpZKFN59pBY3zWnn5f5lZsAdgBc3EOS/uarRUSxXprUVuYQN/vV+kfcoXOUsl7m9scOygAAAXQySzeYAAAEAwBHMEUCICChpsxjFxTJ6ZBc42IiqpN7Mhq5WJ3+foIYMXzYx4m8AiEAzsDGlH4nlNWTYsq5KGhPyZdsxUxRqdBExre3+1ZA2XkwDQYJKoZIhvcNAQELBQADggEBAFzm9LX6tTY5ej82AI5yS62AyddeoRXDCZdwEOqHwguHdfTuVENNdRgNXvAuqrTVcwjC2qJOQygxw+EAUZTde+rhV1Wll8+//4AeTR2g83dgBrK0vbY0hMo1CxR1C2hp4Ow0HLKWEEMKG4G9FuziEDF7qqd/fO02PZ1C581S3tia9YGj6B1ueNu27Lu/WKRHUFvExwifmCL+eplUOijVysQELQOdQx8WxfYEwM1i9tgDg0NhWQ7gk8hKgP14h+bsfKxi6owZa4/WDi5dYrPi9W8IUBNpU9CLpyVgao0PUz3Q86eDcovMYbwAK23Ca4QlLT51IxEq7WgVSQhnPWafaO5mCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAARnMIIEYzCCA0ugAwIBAgIQAYL4CY6i5ia5GjsnhB+5rzANBgkqhkiG9w0BAQsFADBaMQswCQYDVQQGEwJJRTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYDVQQDExlCYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTE1MTIwODEyMDUwN1oXDTI1MDUxMDEyMDAwMFowZDELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEjMCEGA1UEAxMaRGlnaUNlcnQgQmFsdGltb3JlIENBLTIgRzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC75wD+AAFz75uI8FwIdfBccHMf/7V6H40II/3HwRM/sSEGvU3M2y24hxkx3tprDcFd0lHVsF5y1PBm1ITykRhBtQkmsgOWBGmVU/oHTz6+hjpDK7JZtavRuvRZQHJaZ7bN5lX8CSukmLK/zKkf1L+Hj4Il/UWAqeydjPl0kM8c+GVQr834RavIL42ONh3e6onNslLZ5QnNNnEr2sbQm8b2pFtbObYfAB8ZpPvTvgzm+4/dDoDmpOdaxMAvcu6R84Nnyc3KzkqwIIH95HKvCRjnT0LsTSdCTQeg3dUNdfc2YMwmVJihiDfwg/etKVkgz7sl4dWe5vOuwQHrtQaJ4gqPAgMBAAGjggEZMIIBFTAdBgNVHQ4EFgQUwBKyKHRoRmfpcCV0GgBFWwZ9XEQwHwYDVR0jBBgwFoAU5Z1ZMIJHWMys+ghUNoZ7OrUETfAwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wOgYDVR0fBDMwMTAvoC2gK4YpaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL09tbmlyb290MjAyNS5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwDQYJKoZIhvcNAQELBQADggEBAC/iN2bDGs+RVe4pFPpQEL6ZjeIo8XQWB2k7RDA99blJ9Wg2/rcwjangB0lCY0ZStWnGm0nyGg9Xxva3vqt1jQ2iqzPkYoVDVKtjlAyjU6DqHeSmpqyVDmV47DOMvpQ+2HCr6sfheM4zlbv7LFjgikCmbUHY2Nmz+S8CxRtwa+I6hXsdGLDRS5rBbxcQKegOw+FUllSlkZUIII1pLJ4vP1C0LuVXH6+kc9KhJLsNkP5FEx2noSnYZgvD0WyzT7QrhExHkOyL4kGJE7YHRndC/bseF/r/JUuOUFfrjsxOFT+xJd1BDKCcYm1vupcHi9nzBhDFKdT3uhaQqNBU4UtJx5hmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAN7MIIDdzCCAl+gAwIBAgIEAgAAuTANBgkqhkiG9w0BAQUFADBaMQswCQYDVQQGEwJJRTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYDVQQDExlCYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTAwMDUxMjE4NDYwMFoXDTI1MDUxMjIzNTkwMFowWjELMAkGA1UEBhMCSUUxEjAQBgNVBAoTCUJhbHRpbW9yZTETMBEGA1UECxMKQ3liZXJUcnVzdDEiMCAGA1UEAxMZQmFsdGltb3JlIEN5YmVyVHJ1c3QgUm9vdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKMEuyKrmD1X6CZymrV51Cni4eiVgLGw41uOKymaZN+hXe2wCQVt2yguzmKiYv60iNoS6zjrIZ3AQSsBUnuId9Mcj8e6uYi1agnnc+gRQKfRzMpijS3ljwumUNKoUMMo6vWrJYeKmpYcqWe4PwzV9/lSEy/CG9VwcPCPwBLKBsua4dnKM3p31vjsufFoREJIE9LAwqSuXmD+tqYF/LTdB1kC1FkYmGP1pWPgkAx9XbIGevOF6uvUA65ehD5f/xXtabz5OTZydc93Uk3zyZAsuT3lySNTPx8kmCFcB5kpvcY67Oduhjprl3RjM71oGDHweI12v/yejl0qhqdNkNwnGjkCAwEAAaNFMEMwHQYDVR0OBBYEFOWdWTCCR1jMrPoIVDaGezq1BE3wMBIGA1UdEwEB/wQIMAYBAf8CAQMwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBBQUAA4IBAQCFDF2O5G9RaEIFoN27TyclhAO992T9Ldcw46QQF+vaKSm2eT929hkTI7gQCvlYpNRhcL0EYWoSihfVCr3FvDB81ukMJY2GQE/szKN+OMY3EU/t3WgxjkzSswF07r51XgdIGn9w/xZchMB5hbgF/X++ZRGjD8ACtPhSNzkE1akxehi/oCr0Epn3o0WC4zxe9Z2etciefC7IpJ5OCBRLbf1wbWsaY71k5h+3zvDyny67G7fyUIhzksLi4xaNmjICq44Y3ekQEe5+NauQrz4wlHrQMz2nZQ/1/I6eYs9HRCwBXbsdtTLSR9I4LtD+gdwyah617jzV/OeBHRnDJELqYzmpAAAAAQAAAAAAAQ== request-method GET response-head HTTP/1.1 200 OK
+x-amz-id-2: 1lgeLPJlIqVWGteyD84j5KJvVHFtcv1hTMqdf7jka8pNK/ioh7j+bnEbs3TYJsaR058ixROHvC0=
+x-amz-request-id: 8547D397F6C6B1DF
+Date: Wed, 06 Jan 2021 09:49:19 GMT
+Last-Modified: Tue, 05 Jan 2021 06:46:02 GMT
+ETag: "03ef749c08e1662b924da1480126dbc1"
+Accept-Ranges: bytes
+Content-Type: application/javascript
+Content-Length: 129234
+Server: AmazonS3
+ original-response-headers x-amz-id-2: 1lgeLPJlIqVWGteyD84j5KJvVHFtcv1hTMqdf7jka8pNK/ioh7j+bnEbs3TYJsaR058ixROHvC0=
+x-amz-request-id: 8547D397F6C6B1DF
+Date: Wed, 06 Jan 2021 09:49:19 GMT
+Last-Modified: Tue, 05 Jan 2021 06:46:02 GMT
+ETag: "03ef749c08e1662b924da1480126dbc1"
+Accept-Ranges: bytes
+Content-Type: application/javascript
+Content-Length: 129234
+Server: AmazonS3
+ ctid 2 uncompressed-len 0 net-response-time-onstart 1427 net-response-time-onstop 1430  ��
