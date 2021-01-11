@@ -1,4 +1,8 @@
 
-(unity-panel-service:1333): Indicator-Appmenu-CRITICAL **: menus_destroyed: assertion 'IS_WINDOW_MENU(wm)' failed
+(unity-panel-service:1342): Indicator-Appmenu-CRITICAL **: menus_destroyed: assertion 'IS_WINDOW_MENU(wm)' failed
 
-(unity-panel-service:1333): Indicator-Appmenu-CRITICAL **: menus_destroyed: assertion 'IS_WINDOW_MENU(wm)' failed
+(unity-panel-service:1342): Indicator-Appmenu-CRITICAL **: menus_destroyed: assertion 'IS_WINDOW_MENU(wm)' failed
+
+(unity-panel-service:1342): Indicator-Appmenu-WARNING **: Already have a menu for window ID 54525955 with path /com/canonical/menu/3400003 from :1.81, unregistering that one
+
+(unity-panel-service:1342): Indicator-Appmenu-WARNING **: Already have a menu for window ID 54525955 with path /com/canonical/menu/3400003 from :1.81, unregistering that one

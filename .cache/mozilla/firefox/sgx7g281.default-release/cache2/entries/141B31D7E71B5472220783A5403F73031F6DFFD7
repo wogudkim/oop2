@@ -673,15 +673,705 @@ $.urlParam = function(string,name){
 $.GET = function(name){ // Don't Confuse between php = $_GET '[]' this $.GET '()' 
 	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
 }
-ﬂmÇv¢      _ıá§_ıá§BÑ˘ﬁ_˛¬   X    :https://s3.ap-northeast-2.amazonaws.com/code.coursemos.co.kr/annote_supporter.js?v=0.01 necko:classified 1 strongly-framed 1 security-info FnhllAKWRHGAlo+ESXykKAAAAAAAAAAAwAAAAAAAAEaphjojH6pBabDSgSnsfLHeAAAAAgAAAAAAAAAAAAAAAAAAAAEANQFmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAhtMIIIaTCCB1GgAwIBAgIQCRKD5qUQqDZIW51FZ4uxSTANBgkqhkiG9w0BAQsFADBkMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSMwIQYDVQQDExpEaWdpQ2VydCBCYWx0aW1vcmUgQ0EtMiBHMjAeFw0yMDA4MjcwMDAwMDBaFw0yMTA5MDExMjAwMDBaMHsxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMRkwFwYDVQQKExBBbWF6b24uY29tLCBJbmMuMSowKAYDVQQDDCEqLnMzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCcoI+ZECakTXKfQYNQfjZa5v8Epw5w7Aqc/TzMuq5dddUa9IE1+xTYmoTBvl7MX3xDMZY1WmofJlntN/pIxVLbxEzkkSk55l6xljHjxjzVl0k2ScWXGI/PQbFEdquhtMz0zhlPAp7nJ0sGh5giVDqK3QH7qtQuHk9rXPLBtyuxUwkiUE7Zh//VaXN0DpuUYYZ2R9LddsjnAHpONXbVloVWk4FRKiDAW7TwDL0NuDfv0O2DhWZx4p8IpaIvmQEY8BHk8lJEZzq5vXSayH8BYoAELc72Jh9BrjfWBYYBBav2YaYITTT4X3ErkyUuh0bmV1qP49m/29QvrtVCSSFRFWiBAgMBAAGjggT+MIIE+jAfBgNVHSMEGDAWgBTAErIodGhGZ+lwJXQaAEVbBn1cRDAdBgNVHQ4EFgQUAfSOKgT3nhmGPiofI7u4xVUXlSowggIlBgNVHREEggIcMIICGIIhKi5zMy5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgh9zMy5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgiEqLnMzLWFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CH3MzLWFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CKyouczMuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CKXMzLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tghIqLnMzLmFtYXpvbmF3cy5jb22CKSouczMtY29udHJvbC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgidzMy1jb250cm9sLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CMyouczMtY29udHJvbC5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIxczMtY29udHJvbC5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYItKi5zMy1hY2Nlc3Nwb2ludC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgjcqLnMzLWFjY2Vzc3BvaW50LmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcmwwOqA4oDaGNGh0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcmwwTAYDVR0gBEUwQzA3BglghkgBhv1sAQEwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzAIBgZngQwBAgIweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcnQwDAYDVR0TAQH/BAIwADCCAQMGCisGAQQB1nkCBAIEgfQEgfEA7wB1APZclC/RdzAiFFQYCDCUVo7jTRMZM7/fDC8gC8xO8WTjAAABdDJLN5kAAAQDAEYwRAIgSes4ydwp56+qnH40A9x6Mm+lbtbh1I5UeguBbTiv6zECIGD/VE7RucUeiduOX4MAcARqWShTefaQWN81p5+X+ZWbAHYAXNxDkv7mq0VEsV6a1FbmEDf71fpH3KFzlLJe5vbHDsoAAAF0Mks3mAAABAMARzBFAiAgoabMYxcUyemQXONiIqqTezIauVid/n6CGDF82MeJvAIhAM7AxpR+J5TVk2LKuShoT8mXbMVMUanQRMa3t/tWQNl5MA0GCSqGSIb3DQEBCwUAA4IBAQBc5vS1+rU2OXo/NgCOckutgMnXXqEVwwmXcBDqh8ILh3X07lRDTXUYDV7wLqq01XMIwtqiTkMoMcPhAFGU3Xvq4VdVpZfPv/+AHk0doPN3YAaytL22NITKNQsUdQtoaeDsNByylhBDChuBvRbs4hAxe6qnf3ztNj2dQufNUt7YmvWBo+gdbnjbtuy7v1ikR1BbxMcIn5gi/nqZVDoo1crEBC0DnUMfFsX2BMDNYvbYA4NDYVkO4JPISoD9eIfm7HysYuqMGWuP1g4uXWKz4vVvCFATaVPQi6clYGqND1M90POng3KLzGG8ACttwmuEJS0+dSMRKu1oFUkIZz1mn2juwC8AAwAAAAABAQAAAAAAAARQMjU2AAAAEFJTQS1QS0NTMS1TSEEyNTYAA2YKMiaRXE/7uyCJhaYy3wW9w5eaVCJM1YWJaWtuluqDAAAAAAAACG0wgghpMIIHUaADAgECAhAJEoPmpRCoNkhbnUVni7FJMA0GCSqGSIb3DQEBCwUAMGQxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xIzAhBgNVBAMTGkRpZ2lDZXJ0IEJhbHRpbW9yZSBDQS0yIEcyMB4XDTIwMDgyNzAwMDAwMFoXDTIxMDkwMTEyMDAwMFowezELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1NlYXR0bGUxGTAXBgNVBAoTEEFtYXpvbi5jb20sIEluYy4xKjAoBgNVBAMMISouczMuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJygj5kQJqRNcp9Bg1B+Nlrm/wSnDnDsCpz9PMy6rl111Rr0gTX7FNiahMG+XsxffEMxljVaah8mWe03+kjFUtvETOSRKTnmXrGWMePGPNWXSTZJxZcYj89BsUR2q6G0zPTOGU8CnucnSwaHmCJUOordAfuq1C4eT2tc8sG3K7FTCSJQTtmH/9Vpc3QOm5RhhnZH0t12yOcAek41dtWWhVaTgVEqIMBbtPAMvQ24N+/Q7YOFZnHinwiloi+ZARjwEeTyUkRnOrm9dJrIfwFigAQtzvYmH0GuN9YFhgEFq/ZhpghNNPhfcSuTJS6HRuZXWo/j2b/b1C+u1UJJIVEVaIECAwEAAaOCBP4wggT6MB8GA1UdIwQYMBaAFMASsih0aEZn6XAldBoARVsGfVxEMB0GA1UdDgQWBBQB9I4qBPeeGYY+Kh8ju7jFVReVKjCCAiUGA1UdEQSCAhwwggIYgiEqLnMzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CH3MzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CISouczMtYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIfczMtYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIrKi5zMy5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIpczMuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CEiouczMuYW1hem9uYXdzLmNvbYIpKi5zMy1jb250cm9sLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CJ3MzLWNvbnRyb2wuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIzKi5zMy1jb250cm9sLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgjFzMy1jb250cm9sLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgi0qLnMzLWFjY2Vzc3BvaW50LmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CNyouczMtYWNjZXNzcG9pbnQuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb20wDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjCBgQYDVR0fBHoweDA6oDigNoY0aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QmFsdGltb3JlQ0EtMkcyLmNybDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QmFsdGltb3JlQ0EtMkcyLmNybDBMBgNVHSAERTBDMDcGCWCGSAGG/WwBATAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdpY2VydC5jb20vQ1BTMAgGBmeBDAECAjB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2NhY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QmFsdGltb3JlQ0EtMkcyLmNydDAMBgNVHRMBAf8EAjAAMIIBAwYKKwYBBAHWeQIEAgSB9ASB8QDvAHUA9lyUL9F3MCIUVBgIMJRWjuNNExkzv98MLyALzE7xZOMAAAF0Mks3mQAABAMARjBEAiBJ6zjJ3Cnnr6qcfjQD3Hoyb6Vu1uHUjlR6C4FtOK/rMQIgYP9UTtG5xR6J245fgwBwBGpZKFN59pBY3zWnn5f5lZsAdgBc3EOS/uarRUSxXprUVuYQN/vV+kfcoXOUsl7m9scOygAAAXQySzeYAAAEAwBHMEUCICChpsxjFxTJ6ZBc42IiqpN7Mhq5WJ3+foIYMXzYx4m8AiEAzsDGlH4nlNWTYsq5KGhPyZdsxUxRqdBExre3+1ZA2XkwDQYJKoZIhvcNAQELBQADggEBAFzm9LX6tTY5ej82AI5yS62AyddeoRXDCZdwEOqHwguHdfTuVENNdRgNXvAuqrTVcwjC2qJOQygxw+EAUZTde+rhV1Wll8+//4AeTR2g83dgBrK0vbY0hMo1CxR1C2hp4Ow0HLKWEEMKG4G9FuziEDF7qqd/fO02PZ1C581S3tia9YGj6B1ueNu27Lu/WKRHUFvExwifmCL+eplUOijVysQELQOdQx8WxfYEwM1i9tgDg0NhWQ7gk8hKgP14h+bsfKxi6owZa4/WDi5dYrPi9W8IUBNpU9CLpyVgao0PUz3Q86eDcovMYbwAK23Ca4QlLT51IxEq7WgVSQhnPWafaO5mCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAARnMIIEYzCCA0ugAwIBAgIQAYL4CY6i5ia5GjsnhB+5rzANBgkqhkiG9w0BAQsFADBaMQswCQYDVQQGEwJJRTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYDVQQDExlCYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTE1MTIwODEyMDUwN1oXDTI1MDUxMDEyMDAwMFowZDELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEjMCEGA1UEAxMaRGlnaUNlcnQgQmFsdGltb3JlIENBLTIgRzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC75wD+AAFz75uI8FwIdfBccHMf/7V6H40II/3HwRM/sSEGvU3M2y24hxkx3tprDcFd0lHVsF5y1PBm1ITykRhBtQkmsgOWBGmVU/oHTz6+hjpDK7JZtavRuvRZQHJaZ7bN5lX8CSukmLK/zKkf1L+Hj4Il/UWAqeydjPl0kM8c+GVQr834RavIL42ONh3e6onNslLZ5QnNNnEr2sbQm8b2pFtbObYfAB8ZpPvTvgzm+4/dDoDmpOdaxMAvcu6R84Nnyc3KzkqwIIH95HKvCRjnT0LsTSdCTQeg3dUNdfc2YMwmVJihiDfwg/etKVkgz7sl4dWe5vOuwQHrtQaJ4gqPAgMBAAGjggEZMIIBFTAdBgNVHQ4EFgQUwBKyKHRoRmfpcCV0GgBFWwZ9XEQwHwYDVR0jBBgwFoAU5Z1ZMIJHWMys+ghUNoZ7OrUETfAwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wOgYDVR0fBDMwMTAvoC2gK4YpaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL09tbmlyb290MjAyNS5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwDQYJKoZIhvcNAQELBQADggEBAC/iN2bDGs+RVe4pFPpQEL6ZjeIo8XQWB2k7RDA99blJ9Wg2/rcwjangB0lCY0ZStWnGm0nyGg9Xxva3vqt1jQ2iqzPkYoVDVKtjlAyjU6DqHeSmpqyVDmV47DOMvpQ+2HCr6sfheM4zlbv7LFjgikCmbUHY2Nmz+S8CxRtwa+I6hXsdGLDRS5rBbxcQKegOw+FUllSlkZUIII1pLJ4vP1C0LuVXH6+kc9KhJLsNkP5FEx2noSnYZgvD0WyzT7QrhExHkOyL4kGJE7YHRndC/bseF/r/JUuOUFfrjsxOFT+xJd1BDKCcYm1vupcHi9nzBhDFKdT3uhaQqNBU4UtJx5hmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAN7MIIDdzCCAl+gAwIBAgIEAgAAuTANBgkqhkiG9w0BAQUFADBaMQswCQYDVQQGEwJJRTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYDVQQDExlCYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTAwMDUxMjE4NDYwMFoXDTI1MDUxMjIzNTkwMFowWjELMAkGA1UEBhMCSUUxEjAQBgNVBAoTCUJhbHRpbW9yZTETMBEGA1UECxMKQ3liZXJUcnVzdDEiMCAGA1UEAxMZQmFsdGltb3JlIEN5YmVyVHJ1c3QgUm9vdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKMEuyKrmD1X6CZymrV51Cni4eiVgLGw41uOKymaZN+hXe2wCQVt2yguzmKiYv60iNoS6zjrIZ3AQSsBUnuId9Mcj8e6uYi1agnnc+gRQKfRzMpijS3ljwumUNKoUMMo6vWrJYeKmpYcqWe4PwzV9/lSEy/CG9VwcPCPwBLKBsua4dnKM3p31vjsufFoREJIE9LAwqSuXmD+tqYF/LTdB1kC1FkYmGP1pWPgkAx9XbIGevOF6uvUA65ehD5f/xXtabz5OTZydc93Uk3zyZAsuT3lySNTPx8kmCFcB5kpvcY67Oduhjprl3RjM71oGDHweI12v/yejl0qhqdNkNwnGjkCAwEAAaNFMEMwHQYDVR0OBBYEFOWdWTCCR1jMrPoIVDaGezq1BE3wMBIGA1UdEwEB/wQIMAYBAf8CAQMwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBBQUAA4IBAQCFDF2O5G9RaEIFoN27TyclhAO992T9Ldcw46QQF+vaKSm2eT929hkTI7gQCvlYpNRhcL0EYWoSihfVCr3FvDB81ukMJY2GQE/szKN+OMY3EU/t3WgxjkzSswF07r51XgdIGn9w/xZchMB5hbgF/X++ZRGjD8ACtPhSNzkE1akxehi/oCr0Epn3o0WC4zxe9Z2etciefC7IpJ5OCBRLbf1wbWsaY71k5h+3zvDyny67G7fyUIhzksLi4xaNmjICq44Y3ekQEe5+NauQrz4wlHrQMz2nZQ/1/I6eYs9HRCwBXbsdtTLSR9I4LtD+gdwyah617jzV/OeBHRnDJELqYzmpAAAAAQAAAAAAAQ== request-method GET response-head HTTP/1.1 200 OK
-x-amz-id-2: LSwPKrk7itf8vRBTxnLqw0QLp0mBWohgWw6At9LUuj0uXDcrL4FPL32pTeE8yAhMlAR9Pn9KRyQ=
-x-amz-request-id: F91319E2CD4892A0
-Date: Wed, 06 Jan 2021 09:49:10 GMT
-Last-Modified: Tue, 15 Sep 2020 17:03:53 GMT
+        20201014125134-4l1X      $   document   ready   annoteUrl   course_id   removeString   domflag%   $.checkAllowedFile!   checkAllowedFile   $.urlParam   urlParam   $.GET   GET   url   isSimpleMode   isModuleUrlView   filter   isMobile	   host   ahref   fileName   checkExtension   assinFileInfo	   path   watchingFlag   countTable   cellHtml   fileInfo   location=   win16|win32|win64|mac|macintel   navigator   platform   indexOf   toLowerCase   console   log   window   hostname#   ecampus.smu.ac.kr!   learn.inha.ac.kr   pathname)   /mod/assign/view.php   action   grading#   #page-header h1 a	   attr	   href   id   protocol   //   /pluginfile.php7   #mod_assign_grading_r0_c9 a	   text   replace   )   &amp;forcedownload=1!   ?forcedownload=1   split   /'   /local/annote/?cid=   &path=	   body   on%   DOMSubtreeModified   #region-main5   viewpluginassignsubmission   grade   grader	   view	   VIEW   action Null   .generaltable   length   Student/   /mod/uboffline/view.php%   .item_filedownload	   each   for Students   <div style='margin-top:10px;' class='item_filecontrolls'>`   < d i v   c l a s s = " b t n _ a n n o t e   b t n   b t n - p r i m a r y " > ®Ã≠¿< / d i v >    </div>   parseHTML#   .table-bordered a%   decodeURIComponent	   find   .btn_annote   click   after    ÀW      ÀW         ¿  ÀW  /**
+ * Annotation Flaxible
+ */
+
+$(document).ready(function() {
+	var url = document.location;
+	var isSimpleMode = true;
+	var isModuleUrlView = true; // moduel url
+
+	var filter = "win16|win32|win64|mac|macintel";
+	var isMobile = false;
+
+	if ( navigator.platform ) {
+		if ( filter.indexOf( navigator.platform.toLowerCase() ) < 0 ) {
+			isMobile = true;
+		}
+    }
+    console.log(window.location.hostname )
+    var host = window.location.hostname;
+	if(host == "ecampus.smu.ac.kr" || host == "learn.inha.ac.kr" ){
+
+		if(url.pathname=='/mod/assign/view.php' && $.GET('action') == 'grading')
+		{   
+			//example : http://ecampus.smu.ac.kr/mod/assign/view.php?id=205408&action=grading
+	
+			var ahref = $("#page-header h1 a").attr('href')
+			var course_id = $.urlParam(ahref,'id')
+	
+			var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+			var fileName = $("#mod_assign_grading_r0_c9 a").text()
+			var checkExtension = $.checkAllowedFile(fileName);
+			if(checkExtension){
+				var assinFileInfo = $("#mod_assign_grading_r0_c9 a").attr('href')
+				assinFileInfo = assinFileInfo.replace(removeString, '')
+				assinFileInfo = assinFileInfo.replace('&amp;forcedownload=1', '')
+				assinFileInfo = assinFileInfo.replace('?forcedownload=1', '')
+	
+				assinFileInfo = assinFileInfo.split('/')
+	
+				
+				var path = assinFileInfo[0] + '/' + assinFileInfo[1] + '/' + assinFileInfo[2] + '/' + assinFileInfo[3] + '/' + assinFileInfo[4] + '/' + assinFileInfo[5]
+				var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+			}
+			console.log(checkExtension)
+			//Check Change Element
+			//ÏÉÅÎ™ÖÎåÄ Ï†ÑÏö©  - Îã§Î•∏Í≥≥ Ïñ¥ÎñªÍ≤å Ï†ÅÏö© Îê†ÏßÄ Î™®Î¶Ñ
+			var watchingFlag = false;
+			$("body").on('DOMSubtreeModified', "#region-main", function() {
+				
+					$(".ygtvitem .ygtvcontent").each(function(idx, element){
+							var aElement = $(this).find('a');
+							var downloadLink = decodeURIComponent( $(aElement).attr('href') );
+							//console.log(downloadLink)
+							
+							if(downloadLink != 'undefined'){
+								if (!$(this).hasClass('addedAnnotatedData') ){
+									$(this).addClass('addedAnnotatedData');
+	
+									
+									var fileName = $(aElement).text();
+									
+									var checkExtension = $.checkAllowedFile(fileName);
+									if(checkExtension){
+										//console.log(downloadLink)
+											downloadLink = downloadLink.replace(removeString, '')
+											downloadLink = downloadLink.replace('&amp;forcedownload=1', '')
+											downloadLink = downloadLink.replace('?forcedownload=1', '')
+	
+											downloadLink = downloadLink.split('/')
+											
+											var path = downloadLink[0] + '/' + downloadLink[1] + '/' + downloadLink[2] + '/' + downloadLink[3] + '/' + downloadLink[4] + '/' + downloadLink[5]
+											var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+											
+											var btnID = "btn-annot-" + idx;
+											var annoteBtn = "<div id='" + btnID + "' class='btn btn-primary hide' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+											annoteBtn = $.parseHTML(annoteBtn);
+											$(annoteBtn).click(function(){
+												window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+											});
+											
+											var linkParent = $(this).parent();
+											var findBtn = $(linkParent).find("#" + btnID);
+											
+											if(findBtn !== undefined){
+												$(linkParent).append(annoteBtn) 
+											}
+										
+										
+										
+									}
+	
+								}//if has Class 
+							
+							}//if downloadLink
+					
+					
+						
+						
+					});//end each
+	
+	
+			})
+			
+			
+		}
+	
+		if(url.pathname=='/mod/assign/view.php' && $.GET('action') == 'viewpluginassignsubmission')
+		{   
+			var domflag = false;
+			$("body").on('DOMSubtreeModified', "#region-main", function() {
+				if(!domflag){
+	
+					var fileElement = "#ygtv1 #ygtvcontentel1 a";
+	
+					$(".ygtvitem .ygtvcell div a").each(function(idx, ele){
+						var fileElement = this;
+	
+						var fileLink = $(fileElement).attr('href');
+	
+						if(fileLink !== undefined){
+							domflag = true
+		
+							var fileName = $(fileElement).text();
+		
+							var checkExtension = $.checkAllowedFile(fileName);
+							if(checkExtension){
+		
+		
+								
+								var ahref = $("#page-header h1 a").attr('href');
+								var course_id = $.urlParam(ahref,'id');
+		
+								
+								var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+								var assinFileInfo = $(fileElement).attr('href')
+								
+								assinFileInfo = decodeURIComponent( $.urlParam(assinFileInfo,'file') );
+								
+								if(assinFileInfo === 'undefined'){// Ïû¨Ï†ïÏùò - ÌéòÏù¥ÏßÄÏóê Îî∞Îùº Í≤∞Í≥ºÍ∞Ä Îã§Î•∏ÎìØ
+									var assinFileInfo = $(fileElement).attr('href')
+								}
+								
+								assinFileInfo = assinFileInfo.replace(removeString, '')
+								assinFileInfo = assinFileInfo.replace('&amp;forcedownload=1', '')
+								assinFileInfo = assinFileInfo.replace('?forcedownload=1', '')
+								
+								assinFileInfo = assinFileInfo.split('/')
+								
+								var path = assinFileInfo[0] + '/' + assinFileInfo[1] + '/' + assinFileInfo[2] + '/' + assinFileInfo[3] + '/' + assinFileInfo[4] + '/' + assinFileInfo[5]
+								var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+								
+								var annoteBtn = "<div class='btn btn-primary btn-xs' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+								annoteBtn = $.parseHTML(annoteBtn);
+								$(annoteBtn).click(function(){
+									window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+								});
+								$(fileElement).after(annoteBtn)
+		
+								console.log("DOM Changed : ", annoteUrl)
+							}
+		
+							
+							
+							
+							
+							
+		
+						}
+						
+					});
+	
+	
+				}
+	
+	
+	
+			});
+	
+			
+			var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+			var fileName = $("#mod_assign_grading_r0_c9 a").text()
+			var checkExtension = $.checkAllowedFile(fileName);
+			if(checkExtension){
+				var assinFileInfo = $("#mod_assign_grading_r0_c9 a").attr('href')
+				assinFileInfo = assinFileInfo.replace(removeString, '')
+				assinFileInfo = assinFileInfo.split('/')
+				var path = assinFileInfo[0] + '/' + assinFileInfo[1] + '/' + assinFileInfo[2] + '/' + assinFileInfo[3] + '/' + assinFileInfo[4]
+				var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+			}
+			
+			
+		}
+		
+		if(url.pathname=='/mod/assign/view.php' && $.GET('action') == 'grade')
+		{   
+			var domflag = false;
+			$("body").on('DOMSubtreeModified', "#region-main", function() {
+				if(!domflag){
+	
+					var fileElement = "#ygtv1 #ygtvcontentel1 a";
+	
+					$(".ygtvitem .ygtvcell div a").each(function(idx, ele){
+						var fileElement = this;
+	
+						var fileLink = $(fileElement).attr('href');
+	
+						if(fileLink !== undefined){
+							domflag = true
+		
+							var fileName = $(fileElement).text();
+		
+							var checkExtension = $.checkAllowedFile(fileName);
+							if(checkExtension){
+		
+		
+								
+								var ahref = $("#page-header h1 a").attr('href');
+								var course_id = $.urlParam(ahref,'id');
+		
+								
+								var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+								var assinFileInfo = $(fileElement).attr('href')
+								
+								assinFileInfo = decodeURIComponent( $.urlParam(assinFileInfo,'file') );
+								
+								if(assinFileInfo === 'undefined'){// Ïû¨Ï†ïÏùò - ÌéòÏù¥ÏßÄÏóê Îî∞Îùº Í≤∞Í≥ºÍ∞Ä Îã§Î•∏ÎìØ
+									var assinFileInfo = $(fileElement).attr('href')
+								}
+								
+								assinFileInfo = assinFileInfo.replace(removeString, '')
+								assinFileInfo = assinFileInfo.replace('&amp;forcedownload=1', '')
+								assinFileInfo = assinFileInfo.replace('?forcedownload=1', '')
+								
+								assinFileInfo = assinFileInfo.split('/')
+								
+								var path = assinFileInfo[0] + '/' + assinFileInfo[1] + '/' + assinFileInfo[2] + '/' + assinFileInfo[3] + '/' + assinFileInfo[4] + '/' + assinFileInfo[5]
+								var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+								
+								var annoteBtn = "<div class='btn btn-primary btn-xs' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+								annoteBtn = $.parseHTML(annoteBtn);
+								$(annoteBtn).click(function(){
+									window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+								});
+								$(fileElement).after(annoteBtn)
+		
+								console.log("DOM Changed : ", annoteUrl)
+							}
+		
+							
+							
+							
+							
+							
+		
+						}
+						
+					});
+	
+	
+				}
+	
+	
+	
+			});
+	
+			
+			var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+			var fileName = $("#mod_assign_grading_r0_c9 a").text()
+			var checkExtension = $.checkAllowedFile(fileName);
+			if(checkExtension){
+				var assinFileInfo = $("#mod_assign_grading_r0_c9 a").attr('href')
+				assinFileInfo = assinFileInfo.replace(removeString, '')
+				assinFileInfo = assinFileInfo.split('/')
+				var path = assinFileInfo[0] + '/' + assinFileInfo[1] + '/' + assinFileInfo[2] + '/' + assinFileInfo[3] + '/' + assinFileInfo[4]
+				var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+			}
+			
+			
+		}
+	
+		if(url.pathname=='/mod/assign/view.php' && $.GET('action') == 'grader')
+		{   
+			var domflag = false;
+			$("body").on('DOMSubtreeModified', "#region-main", function() {
+				if(!domflag){
+					var fileInfo = $('#ygtvcontentel1 a').attr('href');
+	
+	
+					if(fileInfo !== undefined){
+						console.log("defined")
+						domflag = true;//domflag redefine
+						var fileName = $('#ygtvcontentel1 a').text();
+						var checkExtension = $.checkAllowedFile(fileName);
+	
+						if(checkExtension){
+							fileInfo = decodeURIComponent(fileInfo)
+							
+							var ahref = $("#page-header h1 a").attr('href')
+							
+							var course_id =  $.urlParam(ahref,'id');
+							var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+							fileInfo = fileInfo.replace(removeString, '')
+							fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+							fileInfo = fileInfo.replace('?forcedownload=1', '')
+	
+							fileInfo = fileInfo.split('/')
+							var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+							var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+							//console.log(annoteUrl)
+							var annoteBtn = "<div class='btn btn-primary' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+							annoteBtn = $.parseHTML(annoteBtn);
+							$(annoteBtn).click(function(){
+								window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+							});
+							$('#ygtvcontentel1 a').after(annoteBtn)
+	
+						}
+	
+	
+	
+					}
+				}
+			});
+		}
+	
+		if(url.pathname=='/mod/assign/view.php' && $.GET('action') == 'view')
+		{   
+	
+			console.log('VIEW');
+			var domflag = false;
+			$("body").on('DOMSubtreeModified', "#region-main", function() {
+				if(!domflag){
+					var fileInfo = $('#ygtvcontentel1 a').attr('href');
+	
+	
+					if(fileInfo !== undefined){
+						console.log("defined")
+						domflag = true;//domflag redefine
+						var fileName = $('#ygtvcontentel1 a').text();
+						var checkExtension = $.checkAllowedFile(fileName);
+	
+						if(checkExtension){
+							fileInfo = decodeURIComponent(fileInfo)
+							
+							var ahref = $("#page-header h1 a").attr('href')
+							
+							var course_id =  $.urlParam(ahref,'id');
+							var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+							fileInfo = fileInfo.replace(removeString, '')
+							fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+							fileInfo = fileInfo.replace('?forcedownload=1', '')
+	
+							fileInfo = fileInfo.split('/')
+							var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+							var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+							//console.log(annoteUrl)
+							var annoteBtn = "<div class='btn btn-primary' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+							annoteBtn = $.parseHTML(annoteBtn);
+							$(annoteBtn).click(function(){
+								window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+							});
+							$('#ygtvcontentel1 a').after(annoteBtn)
+	
+						}
+	
+	
+	
+					}
+				}
+			});
+		}
+	
+		if(url.pathname=='/mod/assign/view.php' && $.GET('action') === null )
+		{   
+	
+			console.log('action Null');
+			var domflag = false;
+			
+			$("body").on('DOMSubtreeModified', "#region-main", function() {
+				if(!domflag){
+					var fileInfo = $('#ygtvcontentel1 a').attr('href');
+	
+	
+					if(fileInfo !== undefined){
+						console.log("defined")
+						domflag = true;//domflag redefine
+						var fileName = $('#ygtvcontentel1 a').text();
+						var checkExtension = $.checkAllowedFile(fileName);
+	
+						if(checkExtension){
+							fileInfo = decodeURIComponent(fileInfo)
+							
+							var ahref = $("#page-header h1 a").attr('href')
+							
+							var course_id =  $.urlParam(ahref,'id');
+							var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+							fileInfo = fileInfo.replace(removeString, '')
+							fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+							fileInfo = fileInfo.replace('?forcedownload=1', '')
+	
+							fileInfo = fileInfo.split('/')
+							var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+							var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+							//console.log(annoteUrl)
+							var annoteBtn = "<div class='btn btn-primary' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+							annoteBtn = $.parseHTML(annoteBtn);
+							$(annoteBtn).click(function(){
+								window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+							});
+							$('#ygtvcontentel1 a').after(annoteBtn)
+	
+						}
+	
+	
+	
+					}
+				}
+			});
+	
+			
+			var countTable = $('.generaltable').length
+	
+			console.log(countTable)
+			if(countTable == 2){
+				var domflag = false;
+				$("body").on('DOMSubtreeModified', "#region-main", function() {
+					var fileElement = $("#ygtvcontentel3 a");
+	
+					if(!domflag){
+					var fileInfo = fileElement.attr('href');
+	
+						if(fileInfo !== undefined){
+	
+							var fileName = fileElement.text();
+							var checkExtension = $.checkAllowedFile(fileName);
+							if(checkExtension){
+								
+								domflag = true;//domflag redefine
+	
+								var cellHtml = "";
+								cellHtml += '<tr class="">';
+								cellHtml += '<td class="cell c0" style="">Ï≤®ÏÇ≠ÌôïÏù∏</td>';
+								cellHtml += '<td id="checkAnnote" class="cell c1 lastcol" style=""><div class="btn btn-primary">Ï≤®ÏÇ≠ÌôïÏù∏</div></td>';
+								cellHtml += '</tr>';
+								cellHtml = $.parseHTML(cellHtml);
+								
+								var ahref = $("#page-header h1 a").attr('href')
+								var course_id = $.urlParam(ahref,'id') 
+					
+								//create Annotate URL
+								
+								var fileInfo = fileElement.attr('href');
+								var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+								fileInfo = decodeURIComponent( fileInfo );
+								fileInfo = fileInfo.replace(removeString, '')
+								fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+								fileInfo = fileInfo.replace('?forcedownload=1', '')
+	
+								fileInfo = fileInfo.split('/')
+								var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+								var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+					
+								$(cellHtml).find("#checkAnnote").click(function(){
+									window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+								});
+								
+								/* Î≤ÑÌäº Ï∂îÍ∞Ä Ìòï */
+								var annoteBtn = "<div class='btn btn-primary hide' style='margin-left:10px;'>Í≥ºÏ†ú Ï≤®ÏÇ≠</div>";
+								annoteBtn = $.parseHTML(annoteBtn);
+								$(annoteBtn).click(function(){
+									window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+								});
+								fileElement.after(annoteBtn);
+								//$('.generaltable').eq(1).find('tr').first().after(cellHtml);
+	
+							}// end if checkExtension
+						}
+					}
+				});			
+			}else if(countTable == 1){
+				console.log('Student');
+	
+				var domflag = false;
+				$("body").on('DOMSubtreeModified', "#region-main", function() {
+					if(!domflag){
+					var fileInfo = $('#ygtvcontentel3 a').attr('href');
+	
+						if(fileInfo !== undefined){
+	
+							var fileName = $('#ygtvcontentel3 a').text();
+							var checkExtension = $.checkAllowedFile(fileName);
+							if(checkExtension){
+								
+								domflag = true;//domflag redefine
+	
+								var cellHtml = "";
+								cellHtml += '<tr class="">';
+								cellHtml += '<td class="cell c0" style="">Ï≤®ÏÇ≠ÌôïÏù∏</td>';
+								cellHtml += '<td id="checkAnnote" class="cell c1 lastcol" style=""><div class="btn btn-primary">Ï≤®ÏÇ≠ÌôïÏù∏</div></td>';
+								cellHtml += '</tr>';
+								cellHtml = $.parseHTML(cellHtml);
+								
+								var ahref = $("#page-header h1 a").attr('href')
+								var course_id = $.urlParam(ahref,'id') 
+					
+								//create Annotate URL
+								
+								var fileInfo = $('#ygtvcontentel3 a').attr('href');
+								var removeString = location.protocol+'//'+location.hostname + "/pluginfile.php"
+								fileInfo = decodeURIComponent( fileInfo );
+								fileInfo = fileInfo.replace(removeString, '')
+								fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+								fileInfo = fileInfo.replace('?forcedownload=1', '')
+	
+								fileInfo = fileInfo.split('/')
+								var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+								var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+					
+								$(cellHtml).find("#checkAnnote").click(function(){
+									window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+								});
+								console.log(annoteUrl)
+								$('.generaltable').eq(0).find('.lastrow').after(cellHtml);
+	
+							}// end if checkExtension
+						}
+					}
+				});	
+	
+			}
+			
+		}
+	
+		if(url.pathname == '/mod/uboffline/view.php'){
+	
+			$(".item_filedownload").each(function(idx, ele){
+				
+				var fileInfo = $(ele).find('a').attr('href');
+				if(fileInfo != undefined){
+					var cellHtml = "<td class='item_filecontrolls'>";
+					cellHtml += '<tr class="">';
+					//cellHtml += '<td class="cell c0" style="">Ï≤®ÏÇ≠</td>';
+					cellHtml += '<td id="" class=" cell c1 lastcol" style=""><div class="btn_annote btn btn-primary">Ï≤®ÏÇ≠</div></td>';
+					cellHtml += '</tr></td>';
+					cellHtml = $.parseHTML(cellHtml);
+					
+					var ahref = $("#page-header h1 a").attr('href')
+					var course_id = $.urlParam(ahref,'id') 
+	
+					var removeString = "/pluginfile.php"
+					console.log(removeString)
+					fileInfo = decodeURIComponent( fileInfo );
+					fileInfo = fileInfo.replace(removeString, '')
+					fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+					fileInfo = fileInfo.replace('?forcedownload=1', '')
+					
+					fileInfo = fileInfo.split('/')
+					var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+					var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+		
+					$(cellHtml).find(".btn_annote").click(function(){
+						console.log(annoteUrl)
+						window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+					});
+					//$(ele).find('a').after(cellHtml);
+					$(ele).after(cellHtml);
+					
+					var tableLastSpan = $(".table-uboffline th:last-child").attr('colspan');
+					if(tableLastSpan != 3){
+						$(".table-uboffline th:last-child").attr('colspan',3);
+					}
+				}
+			});
+	
+			if($('.item_filedownload').length === 0){
+				console.log("for Student");
+				var cellHtml = "<div style='margin-top:10px;' class='item_filecontrolls'>";
+				//cellHtml += '<td class="cell c0" style="">Ï≤®ÏÇ≠</td>';
+				cellHtml += '<div class="btn_annote btn btn-primary">Ï≤®ÏÇ≠</div>';
+				cellHtml += '</div>';
+				cellHtml = $.parseHTML(cellHtml);
+	
+	
+				var fileInfo = $(".table-bordered a").attr('href');
+				
+				var ahref = $("#page-header h1 a").attr('href');
+				var course_id = $.urlParam(ahref,'id');
+				var removeString = "/pluginfile.php"
+	
+				fileInfo = decodeURIComponent( fileInfo );
+				fileInfo = fileInfo.replace(removeString, '')
+				fileInfo = fileInfo.replace('&amp;forcedownload=1', '')
+				fileInfo = fileInfo.replace('?forcedownload=1', '')
+	
+				fileInfo = fileInfo.split('/')
+				var path = fileInfo[0] + '/' + fileInfo[1] + '/' + fileInfo[2] + '/' + fileInfo[3] + '/' + fileInfo[4] + '/' + fileInfo[5]
+				var annoteUrl = location.protocol+'//'+location.hostname + "/local/annote/?cid=" + course_id + "&path=" + path
+				$(cellHtml).find(".btn_annote").click(function(){
+					console.log(annoteUrl)
+					window.open(annoteUrl, "", "menubar=1, width=1024, height=850");
+				});
+				$(".table-bordered a").after(cellHtml);
+			}
+			
+	
+			
+		}
+
+
+	}
+
+	
+
+
+
+});
+
+$.checkAllowedFile =  function(fileName) {
+	var extension = fileName.substr( (fileName.lastIndexOf('.') +1) );
+	var result = false;
+    switch(extension) {
+		//pdf
+		case 'pdf':
+		//hwp
+		case 'hwp':
+
+		//word
+		case 'doc':
+		case 'dot':
+		case 'wbk':
+        //ooxml
+        case 'docx':
+		case 'docm':
+		case 'dotx':
+		case 'dotm':
+		case 'docb':
+
+		//excel -- deny
+
+		//powerpoint
+		case 'ppt':
+		case 'pot':
+		case 'pps':
+
+		case 'pptx':
+		case 'pptm':
+		case 'potx':
+		case 'potm':
+		case 'ppam':
+		case 'ppsx':
+		case 'ppsm':
+		case 'sldx':
+		case 'sldm':
+		
+        	result = true;
+            
+	}
+	
+	return result;
+};
+
+$.urlParam = function(string,name){
+	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(string);
+	//console.log(results)
+	if(results === null){
+		return undefined;
+	}else{
+		return results[1] || 0;
+	}
+	
+}
+
+$.GET = function(name){ // Don't Confuse between php = $_GET '[]' this $.GET '()' 
+	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+}
+  W   https://s3.ap-northeast-2.amazonaws.com/code.coursemos.co.kr/annote_supporter.js?v=0.01   ≥!´!Ä!´!ˇˇˇˇ            é!´!    é!´!   é!´!   å!´!ç!´!      † :   ïS  2   ïS        @L   ≥!´!å!´!ˇˇˇˇ                                                                    é!´!   é!´!   é!´!   é!´!   é!´!   é!´!    é!´!!   é!´!"   é!´!#   é!´!$   é!´!%   é!´!&   é!´!'   é!´!(   é!´!)   é!´!    é!´!   é!´!*   é!´!+   é!´!,   é!´!-   é!´!.   é!´!
+   é!´!/   é!´!0   é!´!1   é!´!2   é!´!3   é!´!4   é!´!   é!´!5   é!´!6   é!´!7   é!´!8   é!´!9   é!´!:   é!´!;   é!´!<   é!´!=   é!´!>   é!´!?   é!´!@   å!´!ç!´!      †  X    X  0   >       å!´! †C  C  ;  C  2   .   B   å!´!  †z  ◊  r  ◊  M   &          5ûä!´!ä!´!ä!´!ä!´!é!´!    5û 5ûé!´!A   å!´!ç!´!      †#  Ó    Ó  n   >       å!´! †¢  ◊  ö  ◊  s   1   B   å!´!  †’  ,  Õ  ,  ö   #          5ûä!´!ä!´!ä!´!é!´!    5û 5ûé!´!B   å!´!ç!´!      †1  ¸!  )  ¸!  ≈   >       å!´! †∞  Â!  ®  Â!      1   B   å!´!  †„   :!  €   :!  Ò   #          5ûä!´!ä!´!ä!´!é!´!    5û 5ûé!´!C   å!´!ç!´!      †?%  »*  7%  »*    >   @   å!´!  † *  u*  *  u*  8  "          5ûä!´!ä!´!ä!´!é!´!    5ûé!´!D   é!´!E   å!´!ç!´!      †ê+  1  à+  1  K  >   @   å!´!  †q0  ∆0  i0  ∆0  g  "          5ûä!´!ä!´!ä!´!é!´!    5ûé!´!F   å!´!ç!´!      †Ï1  u7  ‰1  u7  {  >   @   å!´!  †Õ6  "7  ≈6  "7  ó  "          5ûä!´!ä!´!ä!´!é!´!    5ûé!´!G   é!´!H   å!´!ç!´!      †98  Ä@  18  Ä@  ™  ?   @   å!´!  †E>  ú>  =>  ú>  œ  7          5ûå!´!  †Ç?  Ÿ?  z?  Ÿ?  ÷  #          5ûä!´!ä!´!ä!´!é!´!    5ûé!´!I   å!´!ç!´!      †A  	H  A  	H  ‰  ?   @   å!´!  †G  mG  G  mG    7          5ûä!´!ä!´!ä!´!é!´!    5ûé!´!J   é!´!K   é!´!L   å!´!ç!´!     †yH  âN  qH  âN    (   @   å!´!  †M  ÅM  M  ÅM  1  3          5ûä!´!ä!´!é!´!    5ûé!´!M   é!´!N   é!´!O   é!´!P   é!´!Q   é!´!R   é!´!S   é!´!T   é!´!U   é!´!V   å!´!ç!´!      †‹R  GS  ‘R  GS  V  2          5ûé!´!W   öò;¯∞  O                            n    ¸ ª   G   …   ﬁ…  ﬁ…  ﬁ   …  ﬁ…  ﬁª   G   ö>   ó   Ω  ‡H   „ª   G   ‡H   „u  u ö   ó   …  ﬁó   ª   ‡H	   „ª
+   G   G   y ﬁª
+   G   G   …  ﬁΩ     ù   ó   ﬁΩ     ó   ö€
+  ó   Ω   G      ú%   ó   ﬁª   ‡H   „   u    ó"   ö$  ó#   ª   Å      u ‡H   „   u …  ﬁª   ‡H   „Ω     u     ﬁª   G      %ª   G   %   %    ﬁª   Å      u ‡H   „u  …  ﬁª   ‡H   „Ω  u …  ﬁΩ  ö'  ó9   ª   Å      u ‡H   „   u …	  ﬁΩ	  ‡H   „æ       u …	  ﬁΩ	  ‡H   „!       u …	  ﬁΩ	  ‡H   „"       u …	  ﬁΩ	  ‡H#   „$   u …	  ﬁΩ	  I$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%…
+  ﬁª   G      %ª   G   %%   %æ   %&   %Ω
+  %    ﬁóa   ª   ‡H	   „Ω  y ﬁ…  ﬁª   Å   '   u ‡H(   „)   *   l+   y ﬁóh   Ω   G      ú%   ók   ﬁª   ‡H   „   u ,   óo   öÄ  óp       ﬁª   Å   '   u ‡H(   „)   *   l-   y ﬁª   G      %ª   G   %   %    ﬁª   Å      u ‡H   „u  …  ﬁª   ‡H   „Ω  u …  ﬁΩ  öﬂ   óÉ   ª   Å      u ‡H   „   u …	  ﬁΩ	  ‡H   „æ       u …	  ﬁΩ	  ‡H#   „$   u …	  ﬁΩ	  I$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%…
+  ﬁª   G      %ª   G   %%   %æ   %&   %Ω
+  %    ﬁó§   Ω   G      ú%   óß   ﬁª   ‡H   „   u .   ó´   öÄ  ó¨       ﬁª   Å   '   u ‡H(   „)   *   l/   y ﬁª   G      %ª   G   %   %    ﬁª   Å      u ‡H   „u  …  ﬁª   ‡H   „Ω  u …  ﬁΩ  öﬂ   óø   ª   Å      u ‡H   „   u …	  ﬁΩ	  ‡H   „æ       u …	  ﬁΩ	  ‡H#   „$   u …	  ﬁΩ	  I$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%$   %Ω	  I%…
+  ﬁª   G      %ª   G   %%   %æ   %&   %Ω
+  %    ﬁó‡   Ω   G      ú%   ó„   ﬁª   ‡H   „   u 0   óÁ   ö=   óË       ﬁª   Å   '   u ‡H(   „)   *   l1   y ﬁóÏ   Ω   G      ú%   óÔ   ﬁª   ‡H   „   u 2   óÛ   öR   óÙ   ª   ‡H	   „3   y ﬁ    ﬁª   Å   '   u ‡H(   „)   *   l4   y ﬁó˚   Ω   G      ú!   ó˛   ﬁª   ‡H   „   u ó  ö(  ó  ª   ‡H	   „5   y ﬁ    ﬁª   Å   '   u ‡H(   „)   *   l6   y ﬁª   Å   7   u K8   …  ﬁª   ‡H	   „Ω  y ﬁΩ  öB   ó      ﬁª   Å   '   u ‡H(   „)   *   l9   y ﬁôb   ó  Ω  öR   ó  ª   ‡H	   „:   y ﬁ    ﬁª   Å   '   u ‡H(   „)   *   l;   y ﬁó  Ω   G   <   öw  ó"  ª   Å   =   u ‡H>   „l?   y ﬁª   Å   =   u K8   ö2  ó+  ª   ‡H	   „@   y ﬁA   …  ﬁΩ  B   %…  ﬁΩ  C   %…  ﬁª   ‡HD   „Ω  u …  ﬁª   Å   E   u ‡H   „   u …  ﬁª   Å      u ‡H   „   u …  ﬁª   ‡H   „Ω     u     ﬁ       ﬁªF   ÅF   Ω  u …  ﬁΩ  ‡H   „æ       u …  ﬁΩ  ‡H   „!       u …  ﬁΩ  ‡H   „"       u …  ﬁΩ  ‡H#   „$   u …  ﬁΩ  I$   %Ω  I%$   %Ω  I%$   %Ω  I%$   %Ω  I%$   %Ω  I%…
+  ﬁª   G      %ª   G   %%   %æ   %&   %Ω
+  %    ﬁª   Å   Ω  u ‡HG   „H   u ‡HI   „lJ   y ﬁª   Å   E   u ‡HK   „Ω  y ﬁón  •0 `P? `P6 `PF
+ `P: `PF `Pî0 `Pú #P#ˇˇˇ‰P? `PK `Põ P4 `Pî0 `PÆ@ `P´ *Pò0@ `P/P/P8 `Pï PI `Pß0 `P/P* P8 `Pê P8 `P> `P/P/ P8 `Pï P8 `Pï P8 `Pï PH& `Pê PH) `P–0 `PΩ@, `Pê PD/ `P6 `P/Pô 	PIk `P´ *Pò00 `P7 `P/Pô 	PDÄ  ¥ `Pß0 `P/P* P8 `Pê P8 `P> `P/P/ P8 `Pï P8 `Pê P8 `P¬0 `PΩ@Ä  ¬ `P´ *Pò00 `P7 `P/Pô 	PDÄ  `Pß0 `P/P* P8 `Pê P8 `P> `P/P/ P8 `Pï P8 `Pê P8 `P¬0 `PΩ@Ä  `P´ *Pò00 `P7 `P/Pô 	PIÄ F `P´ *Pò000 `Pë P4 `P7 `P/Pô 	PIÄ u `P´ *Pî000 `Pë P4 `P70 `P/Pô 	PDÄ • `P/P=0 `Pê P4 `Pë0 `P7 `P/Pô 	PNÄ ‡ `Pê0 `Pë P40 `P7 `P/Pô 	PIÄ  `Pô00 `P/P/PDÄ ? `P/Pî0 `Pë P4 `P:0 `P6 `P6 `Pê P800 `P/P/P80 `P/P/P8 `Pï P9 `P;0 `P.P8 `Pï P8 `Pï P8 `Pï P80 `Pê P8 `P–0 `P∏0 `P.P/P/P4000 `P/P.PIÄ hP     5ûå!´!ç!´!     †   ∑S  	V  ØS  	V  j            5ûé!´!   å!´!ç!´!     †	   !V  ·V  V  ·V  ñ            5ûé!´!
+   å!´!ç!´!     †   ÛV   W  ÎV   W  °            5ûé!´!   öò;¯S   (                                    ª   Å   ª   u ‡H   „l   y ﬁª   l   L   ﬁª   l   L   ﬁª   l	   L
+   ﬁ•@`P/P/PDÄ j`Pê@Ä ñ`Pê@Ä °`Pê000P  ¸Azg˘      _¸Ä_¸ÄBâÈ+`J    X    :https://s3.ap-northeast-2.amazonaws.com/code.coursemos.co.kr/annote_supporter.js?v=0.01 necko:classified 1 strongly-framed 1 security-info FnhllAKWRHGAlo+ESXykKAAAAAAAAAAAwAAAAAAAAEaphjojH6pBabDSgSnsfLHeAAAAAgAAAAAAAAAAAAAAAAAAAAEANQFmCjImkVxP+7sgiYWmMt8FvcOXmlQiTNWFiWlrbpbqgwAAAAAAAAhtMIIIaTCCB1GgAwIBAgIQCRKD5qUQqDZIW51FZ4uxSTANBgkqhkiG9w0BAQsFADBkMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSMwIQYDVQQDExpEaWdpQ2VydCBCYWx0aW1vcmUgQ0EtMiBHMjAeFw0yMDA4MjcwMDAwMDBaFw0yMTA5MDExMjAwMDBaMHsxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMRkwFwYDVQQKExBBbWF6b24uY29tLCBJbmMuMSowKAYDVQQDDCEqLnMzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCcoI+ZECakTXKfQYNQfjZa5v8Epw5w7Aqc/TzMuq5dddUa9IE1+xTYmoTBvl7MX3xDMZY1WmofJlntN/pIxVLbxEzkkSk55l6xljHjxjzVl0k2ScWXGI/PQbFEdquhtMz0zhlPAp7nJ0sGh5giVDqK3QH7qtQuHk9rXPLBtyuxUwkiUE7Zh//VaXN0DpuUYYZ2R9LddsjnAHpONXbVloVWk4FRKiDAW7TwDL0NuDfv0O2DhWZx4p8IpaIvmQEY8BHk8lJEZzq5vXSayH8BYoAELc72Jh9BrjfWBYYBBav2YaYITTT4X3ErkyUuh0bmV1qP49m/29QvrtVCSSFRFWiBAgMBAAGjggT+MIIE+jAfBgNVHSMEGDAWgBTAErIodGhGZ+lwJXQaAEVbBn1cRDAdBgNVHQ4EFgQUAfSOKgT3nhmGPiofI7u4xVUXlSowggIlBgNVHREEggIcMIICGIIhKi5zMy5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgh9zMy5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgiEqLnMzLWFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CH3MzLWFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CKyouczMuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CKXMzLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tghIqLnMzLmFtYXpvbmF3cy5jb22CKSouczMtY29udHJvbC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgidzMy1jb250cm9sLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CMyouczMtY29udHJvbC5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIxczMtY29udHJvbC5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYItKi5zMy1hY2Nlc3Nwb2ludC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgjcqLnMzLWFjY2Vzc3BvaW50LmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcmwwOqA4oDaGNGh0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcmwwTAYDVR0gBEUwQzA3BglghkgBhv1sAQEwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzAIBgZngQwBAgIweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEJhbHRpbW9yZUNBLTJHMi5jcnQwDAYDVR0TAQH/BAIwADCCAQMGCisGAQQB1nkCBAIEgfQEgfEA7wB1APZclC/RdzAiFFQYCDCUVo7jTRMZM7/fDC8gC8xO8WTjAAABdDJLN5kAAAQDAEYwRAIgSes4ydwp56+qnH40A9x6Mm+lbtbh1I5UeguBbTiv6zECIGD/VE7RucUeiduOX4MAcARqWShTefaQWN81p5+X+ZWbAHYAXNxDkv7mq0VEsV6a1FbmEDf71fpH3KFzlLJe5vbHDsoAAAF0Mks3mAAABAMARzBFAiAgoabMYxcUyemQXONiIqqTezIauVid/n6CGDF82MeJvAIhAM7AxpR+J5TVk2LKuShoT8mXbMVMUanQRMa3t/tWQNl5MA0GCSqGSIb3DQEBCwUAA4IBAQBc5vS1+rU2OXo/NgCOckutgMnXXqEVwwmXcBDqh8ILh3X07lRDTXUYDV7wLqq01XMIwtqiTkMoMcPhAFGU3Xvq4VdVpZfPv/+AHk0doPN3YAaytL22NITKNQsUdQtoaeDsNByylhBDChuBvRbs4hAxe6qnf3ztNj2dQufNUt7YmvWBo+gdbnjbtuy7v1ikR1BbxMcIn5gi/nqZVDoo1crEBC0DnUMfFsX2BMDNYvbYA4NDYVkO4JPISoD9eIfm7HysYuqMGWuP1g4uXWKz4vVvCFATaVPQi6clYGqND1M90POng3KLzGG8ACttwmuEJS0+dSMRKu1oFUkIZz1mn2juwC8AAwAAAAABAQAAAAAAAARQMjU2AAAAEFJTQS1QS0NTMS1TSEEyNTYAA2YKMiaRXE/7uyCJhaYy3wW9w5eaVCJM1YWJaWtuluqDAAAAAAAACG0wgghpMIIHUaADAgECAhAJEoPmpRCoNkhbnUVni7FJMA0GCSqGSIb3DQEBCwUAMGQxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xIzAhBgNVBAMTGkRpZ2lDZXJ0IEJhbHRpbW9yZSBDQS0yIEcyMB4XDTIwMDgyNzAwMDAwMFoXDTIxMDkwMTEyMDAwMFowezELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1NlYXR0bGUxGTAXBgNVBAoTEEFtYXpvbi5jb20sIEluYy4xKjAoBgNVBAMMISouczMuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJygj5kQJqRNcp9Bg1B+Nlrm/wSnDnDsCpz9PMy6rl111Rr0gTX7FNiahMG+XsxffEMxljVaah8mWe03+kjFUtvETOSRKTnmXrGWMePGPNWXSTZJxZcYj89BsUR2q6G0zPTOGU8CnucnSwaHmCJUOordAfuq1C4eT2tc8sG3K7FTCSJQTtmH/9Vpc3QOm5RhhnZH0t12yOcAek41dtWWhVaTgVEqIMBbtPAMvQ24N+/Q7YOFZnHinwiloi+ZARjwEeTyUkRnOrm9dJrIfwFigAQtzvYmH0GuN9YFhgEFq/ZhpghNNPhfcSuTJS6HRuZXWo/j2b/b1C+u1UJJIVEVaIECAwEAAaOCBP4wggT6MB8GA1UdIwQYMBaAFMASsih0aEZn6XAldBoARVsGfVxEMB0GA1UdDgQWBBQB9I4qBPeeGYY+Kh8ju7jFVReVKjCCAiUGA1UdEQSCAhwwggIYgiEqLnMzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CH3MzLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CISouczMtYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIfczMtYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIrKi5zMy5kdWFsc3RhY2suYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIpczMuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CEiouczMuYW1hem9uYXdzLmNvbYIpKi5zMy1jb250cm9sLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CJ3MzLWNvbnRyb2wuYXAtbm9ydGhlYXN0LTIuYW1hem9uYXdzLmNvbYIzKi5zMy1jb250cm9sLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgjFzMy1jb250cm9sLmR1YWxzdGFjay5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tgi0qLnMzLWFjY2Vzc3BvaW50LmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb22CNyouczMtYWNjZXNzcG9pbnQuZHVhbHN0YWNrLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb20wDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQW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 request-method GET response-head HTTP/1.1 200 OK
 ETag: "8694cacc0fc0c2d2eeceb02400d68d04"
 Accept-Ranges: bytes
 Content-Type: application/javascript
 Content-Length: 22475
+x-amz-id-2: +DcjMKaSjDJE1dtLTUzHm8K5wUi2Ohl8NndmWMnpxUgJMystDKC7I6gggoFqxxVwW53N7jUJveQ=
+x-amz-request-id: 6FDE7BC11C5F1F7D
+Date: Mon, 11 Jan 2021 08:42:41 GMT
+Last-Modified: Tue, 15 Sep 2020 17:03:53 GMT
 Server: AmazonS3
  original-response-headers x-amz-id-2: LSwPKrk7itf8vRBTxnLqw0QLp0mBWohgWw6At9LUuj0uXDcrL4FPL32pTeE8yAhMlAR9Pn9KRyQ=
 x-amz-request-id: F91319E2CD4892A0
@@ -692,4 +1382,4 @@ Accept-Ranges: bytes
 Content-Type: application/javascript
 Content-Length: 22475
 Server: AmazonS3
- ctid 2 uncompressed-len 0 net-response-time-onstart 1180 net-response-time-onstop 1187   WÀ
+ ctid 2 uncompressed-len 0 net-response-time-onstart 1180 net-response-time-onstop 1187 alt-data 1;22475,javascript/moz-bytecode-20201014125134-4l1 alt-data-from-child 1   Õ¯

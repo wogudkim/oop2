@@ -755,4 +755,45 @@
       </metadata>
     </info>
   </bookmark>
+  <bookmark href="file:///home/wogudkim/.bash_logout" added="2021-01-11T07:08:24Z" modified="2021-01-11T07:08:26Z" visited="2021-01-11T07:08:25Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;gedit %U&apos;" modified="2021-01-11T07:08:24Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2021-01-11T07:08:26Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/wogudkim/test.cpp" added="2021-01-11T07:08:51Z" modified="2021-01-11T07:11:03Z" visited="2021-01-11T07:08:51Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-c++src"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2021-01-11T07:11:03Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/wogudkim/INFO.md" added="2021-01-11T08:35:14Z" modified="2021-01-11T08:35:25Z" visited="2021-01-11T08:35:14Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/markdown"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;gedit %U&apos;" modified="2021-01-11T08:35:14Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2021-01-11T08:35:25Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
 </xbel>
